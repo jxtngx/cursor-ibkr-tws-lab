@@ -18,33 +18,62 @@ This is the same contract as [cuda-spatial-intelligence-lab](https://github.com/
 It is the opposite of [cursor-fullstack-template](https://github.com/jxtngx/cursor-fullstack-template) and [deep-learning-with-cursor](https://github.com/jxtngx/deep-learning-with-cursor), whose harnesses are built to implement tickets.
 If an agent opens a PR with a complete solution you did not write, the lab failed.
 
+The destination is a first contribution to [Hugging Face Candle](https://github.com/huggingface/candle) or the official Rust bindings for OpenCV, [opencv-rust](https://github.com/twistedfall/opencv-rust).
+The application that keeps every lesson honest is Roboflow [RF-DETR](https://github.com/roboflow/rf-detr) (detection and segmentation) feeding [ByteTrack](https://github.com/FoundationVision/ByteTrack) or [McByte](https://github.com/tstanczyk95/McByte) (mask-cued ByteTrack).
+
 ---
 
 ## What this repo is
 
-A thin Cursor harness around the official Learn Rust path.
+A thin Cursor harness around the official [Learn Rust](https://www.rust-lang.org/learn/) path.
 The spine is [The Rust Programming Language](https://doc.rust-lang.org/book/) ("the Book").
 [Rustlings](https://github.com/rust-lang/rustlings/) and [Rust by Example](https://doc.rust-lang.org/rust-by-example/) are the drills.
 The [standard library](https://doc.rust-lang.org/std/), [Cargo Book](https://doc.rust-lang.org/cargo/), and later the [Rustonomicon](https://doc.rust-lang.org/nomicon/) are how beginners become advanced users without a side quest of blog posts.
 
+Twelve lesson specs live in [`lessons/`](lessons/README.md).
+They are specs, not solutions.
+You create each crate with `cargo init` and write the tests.
+
 What lives here:
 
+- **`lessons/`** — twelve `LESSON.md` files from rustup to an upstream PR.
 - **`.cursor/agents/`** — tutor, engineer, test developer, architect, scrum master.
-  The tutor explains one concept and leaves an exercise.
+  The tutor explains one concept and stops.
   The engineer and test developer review *your* code.
   None of them implement the lesson.
 - **`.cursor/commands/`** — `@start-lesson`, `@explain-concept`, `@review-rust`, `@run-ticket-plan`.
+  `@start-lesson` opens the spec.
   `@run-ticket-plan` shows the next ticket and stops.
-  It must not write the code.
 - **`.cursor/rules/`** — always-on: no emojis, incremental changes, rustfmt + clippy, `cargo test` is the source of truth, no `unwrap` in library paths, no clone-to-compile.
-- **`.cursor/skills/`** — ownership, `Result`, traits, lifetimes, modules, Cargo.
-  Skills are how the tutor stays aligned with the Book, not a substitute for reading it.
-- **`lessons/`** — *your* crates, created as you work through chapters.
-  Empty on purpose until you write them.
+- **`.cursor/skills/`** — ownership, `Result`, traits, lifetimes, modules, Cargo, and the [curriculum plan](.cursor/skills/curriculum-plan/SKILL.md).
 
 There is no multi-agent product pipeline here.
 There is no "implement the sprint" loop.
 If you want that, use the fullstack or deep-learning repos.
+
+## The 12 lessons
+
+Official index: [rust-lang.org/learn](https://www.rust-lang.org/learn/).
+Full table: [lessons/README.md](lessons/README.md).
+
+| # | Lesson | Official spine | Toward |
+| --- | --- | --- | --- |
+| 01 | [Getting started](lessons/01-getting-started/LESSON.md) | Book 1–2, rustup | Walk Candle and opencv-rust |
+| 02 | [Language foundations](lessons/02-language-foundations/LESSON.md) | Book 3, RBE primitives | `BBox`, IoU |
+| 03 | [Ownership](lessons/03-ownership/LESSON.md) | Book 4 | Frames vs `Tensor` vs `Mat` |
+| 04 | [Structs and enums](lessons/04-structs-enums/LESSON.md) | Book 5–6 | RF-DETR det vs seg, track state |
+| 05 | [Crates and modules](lessons/05-crates-modules/LESSON.md) | Book 7, Cargo Book | Workspace shaped like Candle |
+| 06 | [Collections and iterators](lessons/06-collections-iterators/LESSON.md) | Book 8, 13 | ByteTrack association |
+| 07 | [Error handling](lessons/07-error-handling/LESSON.md) | Book 9 | Video, weights, empty frames |
+| 08 | [Traits and lifetimes](lessons/08-traits-lifetimes/LESSON.md) | Book 10 | `Detector` + `Tracker` API |
+| 09 | [Tests and rustdoc](lessons/09-tests-docs/LESSON.md) | Book 11, rustdoc | The PR bar |
+| 10 | [CLI and I/O](lessons/10-cli-io/LESSON.md) | Book 12, CLI book | `rftrack` + optional `VideoCapture` |
+| 11 | [Concurrency](lessons/11-concurrency/LESSON.md) | Book 15–16 | Decode / detect / track threads |
+| 12 | [Contribute](lessons/12-contribute/LESSON.md) | Book 20, Nomicon 1–3 | RF-DETR in Candle **or** video in opencv-rust |
+
+Lessons 01–11 are CPU-only.
+Lesson 12 is the first time weights, `unsafe`, or system OpenCV are allowed.
+McByte needs RF-DETR segmentation masks; ByteTrack needs boxes only.
 
 ## How you are supposed to work
 
@@ -52,7 +81,7 @@ If you want that, use the fullstack or deep-learning repos.
 read the chapter  →  attempt the exercise  →  ask SuperGrok / Cursor  →  fix *your* code  →  cargo test
 ```
 
-1. Read the Book chapter (or the matching Rustlings / Rust by Example section) *before* you prompt.
+1. Open `lessons/NN-*/LESSON.md` and read the official links *before* you prompt.
 2. Write a failing test or a broken program yourself.
 3. Ask SuperGrok or Cursor to explain the compiler error, not to paste the solution.
 4. Change the code yourself.
@@ -69,9 +98,9 @@ read the chapter  →  attempt the exercise  →  ask SuperGrok / Cursor  →  f
 
 ### What the harness must not do
 
-- Implement `@run-ticket-plan` tickets.
+- Implement `@start-lesson` or `@run-ticket-plan` tickets.
 - Fill in `lessons/` or `crates/` because you asked it to "just make it compile."
-- Dump a complete crate, module, or test suite for an exercise you have not attempted.
+- Dump RF-DETR, ByteTrack, or McByte as a complete crate.
 - Skip ownership because it is annoying.
 - Invent a parallel curriculum that replaces the Book.
 
@@ -82,31 +111,30 @@ If SuperGrok or Cursor starts writing the solution, stop it and ask for the ques
 Do not replace these with a custom syllabus.
 Lean on them in this order.
 
-| Stage | Official material | You should be able to |
+| Stage | Official material | Lessons |
 | --- | --- | --- |
-| Start | [Install](https://www.rust-lang.org/learn/get-started) + Book ch. 1–3 | `rustup`, `cargo new`, scalars, control flow |
-| Own it | Book ch. 4–6 + [Rustlings](https://github.com/rust-lang/rustlings/) | moves, borrows, structs, enums, `match` |
-| Structure | Book ch. 7–11 | modules, collections, `Result`, traits, tests |
-| Build | Book ch. 12–14 + [Cargo Book](https://doc.rust-lang.org/cargo/) | a real CLI, iterators, crates.io |
-| Systems | Book ch. 15–20 | smart pointers, concurrency, patterns, a threaded server |
-| Advanced | [std](https://doc.rust-lang.org/std/), [Reference](https://doc.rust-lang.org/reference/), [Nomicon](https://doc.rust-lang.org/nomicon/) | unsafe, aliasing, FFI, when *not* to reach for it |
+| Start | [Install](https://www.rust-lang.org/learn/get-started) + Book ch. 1–3 | 01–02 |
+| Own it | Book ch. 4–6 + [Rustlings](https://github.com/rust-lang/rustlings/) | 03–04 |
+| Structure | Book ch. 7–11 | 05–09 |
+| Build | Book ch. 12–14 + [Cargo Book](https://doc.rust-lang.org/cargo/) + [CLI book](https://rust-cli.github.io/book/) | 10 |
+| Systems | Book ch. 15–17 | 11 |
+| Advanced | [Nomicon](https://doc.rust-lang.org/nomicon/), [Reference](https://doc.rust-lang.org/reference/) | 12 |
 
 Companion drills, used *with* the chapter, not instead of it:
 
-- [Learn Rust](https://www.rust-lang.org/learn) — official index
+- [Learn Rust](https://www.rust-lang.org/learn/) — official index
 - [Rust by Example](https://doc.rust-lang.org/rust-by-example/) — short programs when the Book is too much prose
 - [Compiler Error Index](https://doc.rust-lang.org/error-index.html) — every `E0xxx` you hit
 - [Edition Guide](https://doc.rust-lang.org/edition-guide/) — this repo targets current stable / edition 2024
 
 ## Daily loop in Cursor
 
-1. `@start-lesson [topic]` — the Rust Tutor names the one Book chapter, shows a tiny example, and leaves a test for *you* to make pass.
-2. You write the code in `lessons/<topic>/`.
-3. `@explain-concept <idea>` when you are stuck on *one* idea (ownership, `Result`, `'a`, `dyn Trait`).
+1. `@start-lesson 01` — the Rust Tutor opens the spec, checks that you read the chapter, explains one concept, and stops.
+2. You `cargo init` in that folder and write the code.
+3. `@explain-concept <idea>` when you are stuck on *one* idea.
 4. `@review-rust` after `cargo test` is green.
    Fix what it flags yourself.
 5. `@run-ticket-plan` only to see what is next.
-   Then close the agent and write.
 
 Keep SuperGrok in the same loop: ask it to quiz you, not to author the crate.
 A useful prompt is "I read Book chapter N. Here is my code and the rustc error. Do not write the fix. Ask me three questions that force the right model."
@@ -115,8 +143,9 @@ A useful prompt is "I read Book chapter N. Here is my code and the rustc error. 
 
 - **rustup** stable, current edition (2024).
 - **cargo**, **rustfmt**, **clippy**, **rust-analyzer** in Cursor.
-- **No extra crates** until the Book chapter you are on actually needs one.
+- **No extra crates** until the lesson that names them.
   Prefer `std`.
+- OpenCV and Candle CUDA features are optional until lesson 12.
 - Open this repo in Cursor so `.cursor/` rules, agents, and commands load.
 
 ```bash
@@ -132,10 +161,13 @@ cargo --version
   agents/      # tutor and reviewers — they do not implement
   commands/    # start-lesson, explain-concept, review-rust
   rules/       # always-on Rust and lab rules
-  skills/      # Book-aligned concept notes
-  plans/       # sprint plans, if you keep them
-lessons/       # your chapter crates (you create these)
-crates/        # shared code only after you can justify a public API
+  skills/      # Book-aligned notes + curriculum-plan
+lessons/
+  README.md
+  01-getting-started/LESSON.md
+  ...
+  12-contribute/LESSON.md
+  */src/       # you create these
 ```
 
 ## Definition of done for a lesson

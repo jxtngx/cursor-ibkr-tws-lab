@@ -1,54 +1,37 @@
 # Start Lesson
 
-Begin the next Rust lesson with SuperGrok.
+Open the next SuperGrok Rust lesson. Teach one official concept. Do not write the student's crate.
 
 ## Usage
 
 ```
-@start-lesson [topic]
+@start-lesson [01-12 or slug]
 ```
 
-If no topic is given, pick the next unfinished lesson under `lessons/`.
+If no number is given, pick the first `lessons/NN-*/LESSON.md` whose crate is missing or whose tests are not green.
 
-## CRITICAL: Teach, Then Exercise
+## CRITICAL: Agent Must Not Implement
 
 The agent MUST:
 
-1. State the one concept this lesson covers
-2. Give a 10-20 line example
-3. Show a common compiler error for this concept
-4. Add or update a `lessons/<topic>/` crate
-5. Leave at least one test that the learner can make pass
+1. Open `lessons/NN-<slug>/LESSON.md`
+2. Confirm **Read first** is underway (ask which Book sections they finished)
+3. State the one official concept
+4. Give a 10-20 line example of *the concept*, never the finished exercise
+5. Show one common rustc error for that concept
+6. Point at the **You write** section and stop
 
 The agent MUST NOT:
 
-- Cover more than one major concept
-- Generate a full textbook chapter
-- Implement production crate features (Rust Engineer)
+- Run `cargo init` or create `src/` for them unless they are stuck on tooling and ask
+- Implement `BBox`, IoU, ByteTrack, McByte, RF-DETR, or the CLI
+- Cover more than one major Book concept
+- Replace the Book with a homemade lecture
 
-## Workflow
+## Sequence
 
-```mermaid
-graph LR
-    Topic[Pick topic] --> Explain[Explain]
-    Explain --> Example[Small example]
-    Example --> Exercise[Write exercise]
-    Exercise --> Test[cargo test]
-```
-
-## Suggested Sequence
-
-1. Hello Cargo
-2. Ownership and moves
-3. Borrowing and references
-4. Structs and enums
-5. `Option` and `Result`
-6. Traits
-7. Lifetimes
-8. Modules and crates
-9. Iterators
-10. Testing and clippy
+See [lessons/README.md](../../lessons/README.md) and `.cursor/skills/curriculum-plan/SKILL.md`.
 
 ## Hand-off
 
-When the lesson crate compiles, stop and tell the learner which test to run.
+Tell the student the exact `cargo init` line from the lesson, which test to write first, and that `@review-rust` comes only after `cargo test` is green.

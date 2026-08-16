@@ -2,8 +2,8 @@
 
 > Official spine: [Book Appendix D](https://doc.rust-lang.org/book/appendix-04-useful-development-tools.html) · [Cargo tests](https://doc.rust-lang.org/cargo/guide/tests.html) · [Clippy](https://doc.rust-lang.org/clippy/) · [rustfmt](https://rust-lang.github.io/rustfmt/) · [Compiler Error Index](https://doc.rust-lang.org/error-index.html) · [rustc codegen](https://doc.rust-lang.org/rustc/codegen-options/index.html)
 > Companion: [rust-analyzer](https://rust-analyzer.github.io/manual.html) in Cursor · `rust-gdb` / `rust-lldb` (ship with rustup)
-> Contribution target: Candle and opencv-rust both assume rustfmt, clippy, and `cargo test` before a human looks at the PR
-> Domain hook: none yet. If you cannot read a rustc error or a panic backtrace, later IoU and ByteTrack bugs will look like "the compiler is being mean"
+> Wire: the reviewers you are training for are *you* at 2 a.m. with a stuck paper order, and later a human reading an `ibapi` PR.
+> Domain hook: none yet. If you cannot read a rustc error or a panic backtrace, later book bugs will look like "the compiler is being mean"
 
 This lesson is the bench, not a language chapter.
 You set up the same tools you will use in 01–12 and prove you can drive them.
@@ -28,9 +28,8 @@ The tutor may not fill `NOTES.md` or write the panic you are supposed to read.
 
 rustc is the first reviewer.
 Clippy is the second.
-A Candle or opencv-rust maintainer is the third.
-If rustfmt is a surprise in lesson 09, you wasted eight lessons.
-This module is how you become someone those maintainers can review.
+A book that drops a bid level on a bad `delete` will not wait for an IDE squiggle.
+This module is how you become someone who can debug *your* process.
 
 ## You write
 
@@ -83,7 +82,7 @@ Do not invent a house style.
 - [ ] `cargo test smoke` — filter by name
 - [ ] `cargo test -- --nocapture` — see a `println!` you put in a test
 - [ ] Write a test that fails on purpose, read the assertion output, then fix it
-- [ ] In `NOTES.md`: which of the three test kinds would you use for IoU later, and why
+- [ ] In `NOTES.md`: which of the three test kinds you will use for a book replay later, and why
 
 ### E. Stack traces — panic and `RUST_BACKTRACE`
 
@@ -116,8 +115,8 @@ Never time a debug build and call it performance.
 - [ ] Time it with `std::time::Instant` under `cargo run` (debug)
 - [ ] Time the same function under `cargo run --release`
 - [ ] In `NOTES.md`: both wall times and the `opt-level` that `--release` uses (look it up in the rustc book)
-- [ ] One sentence: why you will not "optimize" IoU until you have a test and a release timing
-- [ ] Optional stretch: `cargo install flamegraph` and `cargo flamegraph --bin ...` if `perf` works on your machine. Paste nothing huge — name the hottest frame
+- [ ] One sentence: why you will not "optimize" the book until you have a test and a release timing
+- [ ] Optional stretch: `cargo install flamegraph` and `cargo flamegraph --bin ...` if `perf` works on your machine. Name the hottest frame
 
 `cargo bench` / Criterion is allowed as stretch.
 It is not required. `Instant` plus `--release` is the official-enough habit.
@@ -140,12 +139,12 @@ Work through **at least five**. For each: broken snippet (in comments or a `gotc
 | 2 | `String` vs `&str` | `E0308` expected `&str`, found `String` (or the reverse) |
 | 3 | Missing `mut` | `E0596` cannot borrow as mutable |
 | 4 | Use after move | `E0382` |
-| 5 | Integer overflow | panic in debug; wrapping or a different result in `--release` if you use `+` on a value that overflows. **Observe both.** Do not ship overflow on purpose |
+| 5 | Integer overflow | panic in debug; wrapping or a different result in `--release` if you use `+` on a value that overflows. **Observe both.** Do not ship overflow on purpose. Tick math in lesson 02 will be integer |
 | 6 | `clone` to compile | It compiles. Clippy or your reviewer should hate it. Write why the clone is a lie |
 | 7 | `unwrap` in library code | Green tests, red review. Replace with `?` or `Option` |
 | 8 | rust-analyzer looks fine, `cargo clippy -D warnings` is not | The editor is not CI. Trust the command |
 | 9 | `cargo run` vs `cargo test` | A `println!` in `lib.rs` is not a test. Prove it |
-| 10 | Debug timing | You already did this in G. Do not file a "perf bug" from an unoptimized build |
+| 10 | Debug timing | You already did this in G. Do not file a "book is slow" bug from an unoptimized build |
 
 Five is the bar.
 Ten is better.
@@ -165,14 +164,14 @@ You can do all of this without the model in the room:
 ## What this lesson is not
 
 - A second copy of Book ch. 11 (that is lesson 09)
-- Permission to add Criterion, tokio-console, or Valgrind as required deps
+- Permission to add Criterion or Valgrind as required deps
 - A house style guide that replaces rustfmt
+- An IBKR hello-world (that is 01 / 12)
 
 ## Stretch
 
-- Turn on rust-analyzer Clippy-on-save in Cursor and show a screenshot in `NOTES.md` (optional)
+- Turn on rust-analyzer Clippy-on-save in Cursor
 - Read `cargo test --help` and name three flags you did not use
-- Skim how Candle CI names `fmt` / `clippy` / `test` so lesson 12 is not a surprise
 
 ## References
 
@@ -184,4 +183,4 @@ You can do all of this without the model in the room:
 - https://doc.rust-lang.org/error-index.html
 - https://doc.rust-lang.org/rustc/codegen-options/index.html
 - https://rust-analyzer.github.io/manual.html
-- rustup wrappers: `rust-gdb`, `rust-lldb` (on your `PATH` after rustup)
+- rustup wrappers: `rust-gdb`, `rust-lldb`

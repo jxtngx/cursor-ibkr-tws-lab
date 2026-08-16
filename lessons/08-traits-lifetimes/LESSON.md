@@ -1,55 +1,56 @@
-# Lesson 08 — Traits and lifetimes: Detector and Tracker
+# Lesson 08 — Traits and lifetimes: MarketData and OrderRouter
 
 > Official spine: [Book ch. 10](https://doc.rust-lang.org/book/ch10-00-generics.html)
 > Companion: Rustlings generics, traits, lifetimes; [RBE — Traits](https://doc.rust-lang.org/rust-by-example/trait.html)
-> Contribution target: the API a Candle example and an opencv capture loop would share
-> Domain hook: RF-DETR det and RF-DETR seg are two `Detector` impls. ByteTrack and McByte are two `Tracker` impls.
+> Wire: this is the API lesson 12's `ibapi` adapter will implement. Stubs now. No socket
+> Domain hook: a JSONL replay and a live paper feed must drive the *same* book and router
 
 ## Contract
 
-This is the contribution API lesson.
 The tutor may show `fn notify(item: &impl Summary)`.
-The tutor may not write `trait Detector`.
-Stubs for inference are required. Real weights are lesson 12.
+The tutor may not write `trait MarketData`.
+Real `ibapi` is lesson 12.
 
 ## Read first (do not skip)
 
 - [ ] Book ch. 10 — generics, traits, trait bounds, lifetimes
 - [ ] Rustlings traits + lifetimes
-- [ ] Skim Candle's pattern: a model struct + `forward` / `load` (pick YOLO-v8 or DINOv2)
-- [ ] Skim RF-DETR README: one architecture, detect vs segment vs keypoint
+- [ ] Skim `ibapi` `Client` methods for market data / orders (names only)
+- [ ] Re-read TWS market depth + basic orders pages
 
 ## Why this exists
 
-If detection is a pile of free functions, you cannot swap RF-DETR det for RF-DETR seg, or ByteTrack for McByte, without rewriting the CLI.
-A PR to Candle examples should look like: load model → `detect(&frame) -> Result<Vec<Detection>>` → `tracker.step(dets) -> Vec<Track>`.
-Lifetimes show up when a detection *borrows* a frame or a mask *borrows* a buffer. Prefer owned outputs in the public trait unless you can name the source.
+If the book is glued to a socket, you cannot test it on a plane.
+A paper `ibapi` client and a JSONL feeder should be two impls of one trait.
+Lifetimes show up when an update *borrows* a buffer. Prefer owned `DepthUpdate` in the public trait unless you can name the source.
 
 ## You write
 
 ```text
-trait Detector {
+trait MarketData {
     fn name(&self) -> &'static str;
-    fn detect(&mut self, frame: &Frame) -> Result<Vec<Detection>>;
+    fn next_update(&mut self) -> Result<Option<DepthUpdate>>;
 }
 
-trait Tracker {
-    fn step(&mut self, detections: &[Detection]) -> Result<Vec<ActiveTrack>>;
+trait OrderRouter {
+    fn submit(&mut self, order: NewOrder) -> Result<OrderId>;
+    fn cancel(&mut self, id: OrderId) -> Result<()>;
 }
 ```
 
-Impls (all in-process, no GPU):
+Impls (all in-process):
 
-- `JsonlDetector` — reads the lesson 07 fixture, one frame per `detect` call (stand-in for RF-DETR)
-- `StubRfDetrDet` — returns boxes only (`mask: None`)
-- `StubRfDetrSeg` — returns boxes plus a dummy full-frame mask
-- `ByteTracker` — lesson 06 associate
-- `McByteTracker` — same as ByteTrack, but *if* a detection has a mask, fold `mask_bbox_overlap` into the match score (document the blend). If no mask, behave like ByteTrack.
+- `JsonlFeed` — reads the lesson 07 fixture
+- `ScriptedFeed` — `Vec<DepthUpdate>` you push in tests
+- `PaperRouter` — records submitted orders, fills against the *current* book if a limit is marketable, otherwise rests. This is *your* matching, not IBKR's
+- `RejectLiveRouter` — every submit returns `WireError::paper-only` (use this if someone passes a live flag)
 
 Lifetime rule:
 
-- `detect` must not return references into `frame` unless `'frame` is on the return type and you can defend it
-- Prefer owned `Detection` (lesson 03–04)
+- `next_update` returns an owned `DepthUpdate`
+- Do not return references into the feed's buffer unless `'a` is on the trait and you can defend it
+
+A generic `fn run_once<F: MarketData, R: OrderRouter>(book, feed, router, maybe_order)` used by tests.
 
 ## Plan of work
 
@@ -60,29 +61,30 @@ Lifetime rule:
 
 ### B. Implement
 
-- [ ] Traits + five impls
-- [ ] A generic `fn run_clip<D: Detector, T: Tracker>(...)` used by tests
-- [ ] Tests: det-only path works with ByteTrack; seg path gives McByte a mask to use; det path with McByte still works (falls back)
+- [ ] Traits + impls
+- [ ] Test: scripted feed rebuilds a known book
+- [ ] Test: resting bid does not fill when ask is above
+- [ ] Test: marketable limit fills in `PaperRouter`
+- [ ] Test: `RejectLiveRouter` never records a fill
 
 ### C. Notes
 
-- [ ] Would Candle want `Detector` in `candle-transformers` or only in the example? Argue in five sentences.
-- [ ] Would opencv-rust want any of this? (Probably not — it wants `Mat` in and `Mat` out. Your tracker stays your crate.)
+- [ ] Would `ibapi` implement `MarketData` on `Client` or on a subscription wrapper? Five sentences
+- [ ] Why `Book` is *not* a trait object this week
 
 ## Definition of done
 
-Swapping `StubRfDetrDet` + `ByteTracker` for `StubRfDetrSeg` + `McByteTracker` is a type-parameter change, not a rewrite.
-No `'static` escape hatches on frames.
+Swapping `ScriptedFeed` for `JsonlFeed` is a type-parameter change, not a rewrite.
+No `'static` escape hatches on updates.
+No `ibapi` in `Cargo.toml`.
 
 ## Stretch
 
-Read DINOv2 in Candle (RF-DETR's backbone family).
-List the types you would need for a real `RfDetr` impl of `Detector`.
+Sketch `struct IbapiFeed { ... }` field list only. No connect.
 
 ## References
 
 - https://doc.rust-lang.org/book/ch10-00-generics.html
-- https://github.com/huggingface/candle (YOLO-v8, DINOv2, SAM, SegFormer)
-- https://github.com/roboflow/rf-detr
-- https://arxiv.org/abs/2506.01373 (McByte)
-- https://arxiv.org/abs/2110.06864 (ByteTrack)
+- https://docs.rs/ibapi/
+- https://interactivebrokers.github.io/tws-api/market_depth.html
+- https://interactivebrokers.github.io/tws-api/basic_orders.html

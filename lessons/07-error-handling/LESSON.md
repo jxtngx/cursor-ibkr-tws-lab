@@ -1,9 +1,9 @@
-# Lesson 07 — Error handling: video, weights, empty frames
+# Lesson 07 — Error handling: disconnects, rejects, paper only
 
 > Official spine: [Book ch. 9](https://doc.rust-lang.org/book/ch09-00-error-handling.html) · [RBE — Error handling](https://doc.rust-lang.org/rust-by-example/error.html)
 > Companion: Rustlings error-handling, options
-> Contribution target: Candle and opencv-rust both surface `Result`. A PR that `unwrap`s `VideoCapture` or `safetensors` will be rejected.
-> Domain hook: missing weights, unreadable video, empty `Mat`, zero detections — all recoverable.
+> Wire: TWS error codes / notices (2100–2169 informational; 1100-series connectivity). `ibapi` surfaces `Notice` / `Error`
+> Domain hook: a missing paper port, a live port, a bad contract, a rejected limit — all recoverable. A live submit is not
 
 ## Contract
 
@@ -15,44 +15,45 @@ The tutor may not design your error enum.
 ## Read first (do not skip)
 
 - [ ] Book ch. 9 — panic vs `Result`, `?`, custom errors
-- [ ] RBE error handling (unwrapping, `map`, `?`)
-- [ ] Grep Candle for `pub type Result` / `candle_core::Error` (how they wrap)
-- [ ] Grep opencv-rust examples for `.unwrap()` vs `?` — notice the FFI style, then do better in *your* API
+- [ ] RBE error handling
+- [ ] TWS API error / system codes enough to name: connectivity broken, farm data, order reject
+- [ ] `ibapi` README on `Notice` vs hard errors (read only)
 
 ## Why this exists
 
-Lesson 12 will load RF-DETR weights (`safetensors` via `hf_hub` or a local path) and open a video (`opencv::videoio::VideoCapture` or a file of detections).
-Both fail in boring ways.
-This lesson makes those failures a type, not a crash.
+Lesson 12 will connect to paper TWS and submit one limit.
+Both fail in boring ways: port closed, client id in use, contract not found, order rejected, pacing.
+This lesson makes those failures a type, and makes **live ports** a type you refuse.
 
 ## You write
 
 Crate `lesson07` (or fold into the workspace):
 
 ```text
-enum PipelineError { ... }
-type Result<T> = std::result::Result<T, PipelineError>;
+enum WireError { ... }
+type Result<T> = std::result::Result<T, WireError>;
 ```
 
 Required variants (names yours):
 
-- source not found (video path or JSONL path)
-- bad detection record (parse)
-- empty frame (width or height 0)
-- no weights (path or repo id)
-- tracker invariant (duplicate track id)
+- connect failed (IO)
+- live port refused (`7496`, `4001` — you reject *before* connect)
+- unknown symbol / contract
+- book apply failed (from lesson 06)
+- order rejected (string or code)
+- paper-only violation
 
 Implement `Display` + `std::error::Error`.
 Implement `From<std::io::Error>`.
 
 Functions:
 
-- `fn load_detections_jsonl(path: &Path) -> Result<Vec<Vec<Detection>>>` (one line per frame; invent a tiny format and document it)
-- `fn require_frame(width: u32, height: u32) -> Result<()>`
-- `fn load_weight_path(path: &Path) -> Result<()>` — existence check only; do not parse safetensors yet
+- `fn parse_port(port: u16) -> Result<PaperPort>` — `7497` and `4002` ok; `7496` / `4001` → `Err`
+- `fn load_depth_jsonl(path: &Path) -> Result<Vec<DepthUpdate>>` — invent a tiny format; document it
+- `fn require_contract(symbol: &str) -> Result<FuturesSpec>` — allow `MES`, `ES`, and one commodity micro; reject `AAPL` or empty
 
 Tests for each failure and one success path.
-Use `tempfile` only if you add it deliberately and can justify it; otherwise write fixtures under `tests/data/`.
+Fixtures under `tests/data/`.
 
 ## Plan of work
 
@@ -63,19 +64,22 @@ Use `tempfile` only if you add it deliberately and can justify it; otherwise wri
 ### B. Implement
 
 - [ ] Error enum + `From`
+- [ ] Paper port guard
 - [ ] JSONL loader + fixtures
 - [ ] `cargo test`
-- [ ] clippy `-D warnings` (it will yell at leftover `unwrap`)
+- [ ] clippy `-D warnings`
 
 ### C. Notes
 
-- [ ] Copy *signatures only* of `Tensor::read_safetensors` or the Candle equivalent you found, and of `VideoCapture::from_file` / `is_opened`
-- [ ] Write how *your* `PipelineError` would wrap each
+- [ ] Copy *signatures only* of `ibapi` `Client::connect` as you found them
+- [ ] Write how *your* `WireError` would wrap connect failure
+- [ ] List two TWS notice codes you will treat as non-fatal later
 
 ## Definition of done
 
+`parse_port(7496)` is `Err`.
 A missing file returns `Err`, never panic.
-You can add a new variant without touching call sites that use `?`.
+You can add a new variant without touching `?` call sites.
 
 ## Stretch
 
@@ -86,6 +90,5 @@ Do not add `thiserror` unless you can explain the expand.
 
 - https://doc.rust-lang.org/book/ch09-00-error-handling.html
 - https://doc.rust-lang.org/rust-by-example/error.html
-- https://github.com/huggingface/candle
-- https://github.com/twistedfall/opencv-rust
-- https://github.com/huggingface/safetensors
+- https://interactivebrokers.github.io/tws-api/message_codes.html (or the current TWS error-codes page)
+- https://docs.rs/ibapi/

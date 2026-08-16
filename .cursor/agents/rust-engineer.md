@@ -45,6 +45,8 @@ Cargo.toml
 ## Constraints
 
 - Do NOT write lesson narrative (Rust Tutor scope)
+- Do NOT implement lesson crates, the book, the router, or an `ibapi` client for the student
+- Do NOT connect to TWS live ports (7496 / 4001)
 - Do NOT add `unsafe` without a SAFETY comment and a safe wrapper
 - Do NOT `clone` to silence the borrow checker
 - Do NOT change workspace layout without Architect approval

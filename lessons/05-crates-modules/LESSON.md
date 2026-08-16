@@ -1,53 +1,53 @@
-# Lesson 05 — Crates and modules: a workspace shaped like Candle
+# Lesson 05 — Crates and modules: a workspace shaped like a desk
 
 > Official spine: [Book ch. 7](https://doc.rust-lang.org/book/ch07-00-managing-growing-projects-with-packages-crates-and-modules.html) · [Cargo Book — Starting](https://doc.rust-lang.org/cargo/guide/creating-a-new-package.html) · [Cargo Book — Workspaces](https://doc.rust-lang.org/cargo/reference/workspaces.html)
 > Companion: Rustlings modules
-> Contribution target: you cannot PR `candle-transformers` if you do not understand `mod` / `pub` / workspace members
-> Domain hook: `geom`, `det`, `track` are the three crates a MOT stack actually needs
+> Wire: read how [`ibapi`](https://github.com/wboayue/rust-ibapi) splits `contracts`, `orders`, `market_data`, `Client`. You are not adding that crate yet
+> Domain hook: `tick`, `book`, `order` are the three crates a futures stack actually needs
 
 ## Contract
 
 You create the workspace.
 The tutor does not edit `Cargo.toml` for you after the first "where does [workspace] go" hint.
-Do not add Candle or opencv as dependencies yet.
+Do not add `ibapi` as a dependency yet.
 
 ## Read first (do not skip)
 
 - [ ] Book ch. 7 — packages, crates, modules, `pub`, paths
 - [ ] Cargo Book: creating a package + workspaces
-- [ ] Walk Candle's top-level `Cargo.toml` (members: `candle-core`, `candle-nn`, `candle-transformers`, `candle-examples`, …)
-- [ ] Walk opencv-rust features (`videoio`, `imgproc`, `dnn`, `tracking`) — features are not modules, but they split the public surface the same way
+- [ ] Walk `ibapi`'s module map on docs.rs (`contracts`, `orders`, client, subscriptions)
+- [ ] Walk [ib-interface](https://github.com/jxtngx/ib-interface) only far enough to see it is a *different language*. Do not port modules
 
 ## Why this exists
 
-A useful contribution is a *small* public surface.
-Candle puts ops in `candle-core`, layers in `candle-nn`, and named models in `candle-transformers/src/models/`.
-Your RF-DETR port will be one file (or folder) under `models/`, not a rewrite of `Tensor`.
-This lesson builds that reflex in *your* workspace.
+A useful trading crate is a *small* public surface.
+`ibapi` puts wire types in the client crate.
+Your *domain* (ticks, book apply, order state) should not import a socket.
+Lesson 12 is an adapter. This lesson builds that reflex.
 
 ## You write
 
-At the **repository root** (or under `lessons/05-crates-modules/` if you prefer to keep the root clean — pick one and document it):
+Under `lessons/05-crates-modules/` (keep the repo root clean):
 
 ```
-geom/     # bbox, iou (move lesson 02/04 types here)
-det/      # Detection, Mask
-track/    # TrackState
+tick/     # Tick, FuturesSpec, MES/ES math (lessons 02/04)
+book/     # Book, Level, DepthUpdate (lesson 03)
+order/    # Side, Tif, Order, OrderStatus
 ```
 
 Rules:
 
-- Root `Cargo.toml` is a virtual workspace
-- `track` depends on `det` depends on `geom` — no cycles
+- Virtual workspace
+- `book` and `order` may depend on `tick` — no cycles
 - `lib.rs` is a map (`mod` + `pub use` of the small API)
 - Internal helpers stay private
 - Each crate has at least one unit test
 
 Also write `NOTES.md`:
 
-- Where an RF-DETR *model* would live in Candle (`candle-transformers`)
-- Where an RF-DETR *example* would live (`candle-examples/examples/rf-detr`)
-- Where a `VideoCapture` snippet would live in opencv-rust (docs/examples, not the binding generator, unless you are fixing a binding)
+- Where an `ibapi` adapter would live later (`wire/` or `ibkr/`, *not* inside `book`)
+- Which `ibapi` module maps to each of your crates
+- Why `book` must not depend on `ibapi`
 
 ## Plan of work
 
@@ -63,23 +63,23 @@ Also write `NOTES.md`:
 - [ ] `cargo test --workspace`
 - [ ] `cargo clippy --workspace --all-targets -- -D warnings`
 
-### C. Read-only Candle map
+### C. Read-only `ibapi` map
 
-- [ ] List five entries under `candle-transformers` models that are vision (DINOv2, YOLO, SAM, SegFormer, …)
-- [ ] One sentence: RF-DETR is closer to which of those, and why (DETR/DINO family vs YOLO postprocess)
+- [ ] List the modules you will call in lesson 12 (`Client`, `Contract::futures`, orders, market depth if you found it)
+- [ ] One sentence: your `Book::apply` stays yours; `ibapi` only produces `DepthUpdate`s
 
 ## Definition of done
 
 `tree` of your workspace makes sense to a stranger.
-You can say, without opening GitHub, which Candle crate you will patch in lesson 12.
+You can say, without opening GitHub, which crate must never import `ibapi`.
 
 ## Stretch
 
-Sketch a `contrib/rf-detr.md` with the *files* you would add to Candle. No code.
+Sketch `wire/README.md` with the *files* you would add in lesson 12. No code.
 
 ## References
 
 - https://doc.rust-lang.org/book/ch07-00-managing-growing-projects-with-packages-crates-and-modules.html
 - https://doc.rust-lang.org/cargo/reference/workspaces.html
-- https://github.com/huggingface/candle
-- https://github.com/twistedfall/opencv-rust
+- https://docs.rs/ibapi/
+- https://github.com/wboayue/rust-ibapi

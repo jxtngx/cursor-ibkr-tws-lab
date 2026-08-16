@@ -1,9 +1,9 @@
-# Lesson 11 — Concurrency: decode, detect, track
+# Lesson 11 — Concurrency: feed, book, router
 
 > Official spine: [Book ch. 15](https://doc.rust-lang.org/book/ch15-00-smart-pointers.html) · [Book ch. 16](https://doc.rust-lang.org/book/ch16-00-concurrency.html) · optional [Book ch. 17 async](https://doc.rust-lang.org/book/ch17-00-async-await.html)
 > Companion: [RBE — Threads](https://doc.rust-lang.org/rust-by-example/std_misc/threads.html)
-> Contribution target: how you will *serve* a Candle model (one `Arc` model, many frames) without data races
-> Domain hook: capture / RF-DETR / ByteTrack-or-McByte as three stages
+> Wire: `ibapi` v3 default is async Tokio; the *sync* feature is a blocking client. You will pick one in lesson 12. This week is threads + channels so the model is visible
+> Domain hook: depth callbacks must not hold the book lock while submitting an order
 
 ## Contract
 
@@ -11,37 +11,38 @@ Threads + channels first. Async is optional stretch.
 The tutor may show `mpsc::channel`.
 The tutor may not write the pipeline.
 `unsafe` is forbidden in this lesson.
+No `ibapi` yet.
 
 ## Read first (do not skip)
 
-- [ ] Book ch. 15 — `Box`, `Rc`, `RefCell`, `Arc` (focus on `Arc` + `Mutex` / `RwLock`)
+- [ ] Book ch. 15 — `Box`, `Rc`, `RefCell`, `Arc` (focus on `Arc` + `Mutex`)
 - [ ] Book ch. 16 — threads, `Move`, `mpsc`, `Mutex`, `Sync`/`Send`
-- [ ] Optional ch. 17 if you already know you want async I/O
-- [ ] Candle device note: a `Tensor` is not trivially shared across threads without thinking about the `Device`
+- [ ] Optional ch. 17 if you already know you want async for `ibapi` default
+- [ ] `ibapi` README: async vs `features = ["sync"]`
 
 ## Why this exists
 
-RF-DETR on GPU wants the model loaded once.
-opencv capture wants its own thread so a slow detect does not stall the camera.
-Tracking is cheap and should not own the GPU.
-This lesson builds that shape with a *fake* detector that sleeps, so you can prove the plumbing.
+TWS will push depth faster than you should block on an order ack.
+The book is shared state.
+The router must not be called with the book lock held if `apply` and `submit` can deadlock.
+This lesson builds that shape with a *fake* feed that sleeps.
 
 ## You write
 
 Three threads (or two + main):
 
-1. **Source** — yields `Frame` (from JSONL or a synthetic generator) into a bounded channel
-2. **Detect** — `Detector` impl, owns or `Arc`s the stub model, sends `Vec<Detection>`
-3. **Track** — `Tracker` impl, prints or collects `ActiveTrack`
+1. **Feed** — `MarketData` impl yields `DepthUpdate` into a bounded channel
+2. **Book** — applies updates, publishes a *snapshot* (owned best bid/ask, or a cloned small snapshot you can defend) to the router
+3. **Router** — may submit a scripted MES limit once the spread is ≤ N ticks
 
 Rules:
 
-- Bounded channels (size 2–4). Prove what happens when detect is slow (drop or block — pick one, test it).
-- `Detector` that is `Send`. If it is not `Sync`, do not share it; move it into the detect thread.
-- Shut down cleanly when the source ends (no leaked threads)
-- Tests: same JSONL clip as lesson 10 produces the same track ids as the single-thread CLI (determinism)
+- Bounded channels (size 2–4). Prove what happens when apply is slow (drop or block — pick one, test it)
+- `Book` behind `Mutex` only if you must; prefer the book thread owns the book and the router never locks it
+- Shut down cleanly when the feed ends
+- Tests: same JSONL tape as lesson 10 produces the same best bid/ask as single-thread `lob`
 
-No `unsafe`. No `clone` of pixel buffers except at the documented source→detect handoff.
+No `unsafe`. No `clone` of the full book unless `NOTES.md` says why a snapshot is required.
 
 ## Plan of work
 
@@ -54,26 +55,27 @@ No `unsafe`. No `clone` of pixel buffers except at the documented source→detec
 
 - [ ] Bounded pipeline
 - [ ] Clean shutdown
-- [ ] Determinism test vs single-thread
+- [ ] Determinism test vs single-thread replay
+- [ ] Backpressure test with a slow book
 
 ### C. Notes
 
-- [ ] Where a real `candle_core::Device::Cuda` would live (detect thread only)
-- [ ] Why McByte's propagated mask must stay on the track thread, not hop back to detect
+- [ ] Which `ibapi` mode you will use in 12 (async default vs sync) and why
+- [ ] Where a second book (ES) would live — second feed thread, not a second process
 
 ## Definition of done
 
 You can draw the three stages and mark which type is `Send`, which is `Arc`, and which is moved.
-`cargo test` includes a slow-detector backpressure test.
+`cargo test` includes a slow-feed backpressure test.
+Still no socket.
 
 ## Stretch
 
-Book ch. 17: rewrite source as async file read. Keep detect on a blocking thread (`spawn_blocking`) because Candle and OpenCV will be.
+Book ch. 17: rewrite the feed as async. Keep the book on one thread. This matches `ibapi` async subscriptions better.
 
 ## References
 
 - https://doc.rust-lang.org/book/ch15-00-smart-pointers.html
 - https://doc.rust-lang.org/book/ch16-00-concurrency.html
 - https://doc.rust-lang.org/book/ch17-00-async-await.html
-- https://github.com/huggingface/candle
-- https://github.com/twistedfall/opencv-rust
+- https://github.com/wboayue/rust-ibapi

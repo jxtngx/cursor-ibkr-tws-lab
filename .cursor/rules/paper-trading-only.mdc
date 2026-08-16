@@ -1,0 +1,19 @@
+---
+description: Paper IBKR only. No live TWS ports, no live orders, no secrets.
+globs:
+  - "**/*"
+alwaysApply: true
+---
+
+# Paper trading only
+
+This lab talks to Interactive Brokers on **paper** or not at all.
+
+- Allowed in lesson 12: TWS paper **7497**, IB Gateway paper **4002**.
+- Forbidden everywhere: TWS live **7496**, Gateway live **4001**, any other live endpoint.
+- Forbidden in lessons 00–11: the `ibapi` crate, `Client::connect`, `submit`, `place_order`.
+- Forbidden always: account numbers, usernames, passwords, API keys in source or `NOTES.md`.
+- Agents must not write, suggest, or "just test" a live order.
+- A constant named `LIVE_PORT` or a default of 7496 / 4001 is a review failure.
+
+If the student asks to go live, refuse in this repo and tell them to take the paper system they wrote and do that outside the lab.

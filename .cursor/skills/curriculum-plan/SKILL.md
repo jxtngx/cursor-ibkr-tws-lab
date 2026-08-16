@@ -1,35 +1,38 @@
 ---
 name: curriculum-plan
-description: Master 13-lesson Cursor Rust Lab curriculum (00 toolchain, 01-12 Book to contribution). Use when the user asks what lesson they are on, what to read next, or how a lesson maps to Candle, opencv-rust, RF-DETR, ByteTrack, or McByte. Open the matching lessons/NN-*/LESSON.md for the spec.
+description: Master 13-lesson Cursor Rust Lab curriculum (00 toolchain, 01-12 Book to a paper MES-ES limit-order book on IBKR via ibapi). Use when the user asks what lesson they are on, what to read next, or how a lesson maps to TWS, ibapi, MES, ES, or market depth. Open the matching lessons/NN-*/LESSON.md for the spec.
 ---
 
 # 13-lesson curriculum
 
 Source of truth for sequence: [lessons/README.md](../../../lessons/README.md).
-Official index: [Learn Rust](https://www.rust-lang.org/learn/).
+Official language index: [Learn Rust](https://www.rust-lang.org/learn/).
+Official broker index: [TWS API](https://interactivebrokers.github.io/tws-api/introduction.html).
+Rust client: [`ibapi`](https://github.com/wboayue/rust-ibapi) (lesson 12 only).
 
 ## Intent
 
-Take a beginner to a first contribution on [huggingface/candle](https://github.com/huggingface/candle) or [twistedfall/opencv-rust](https://github.com/twistedfall/opencv-rust), fast, without replacing the Book.
+Take a beginner to a paper-traded MES → ES limit-order book on Interactive Brokers, fast, without replacing the Book.
 
-Application destination: Roboflow RF-DETR (detection + segmentation) feeding ByteTrack or McByte (mask-cued ByteTrack).
+Application destination: reconstruct Level 2 from TWS `reqMarketDepth` (insert / update / delete), route a limit, convert 10 MES ≡ 1 ES notional. Same types must also describe commodity micros (MCL, MGC).
 
 ## Bias
 
 - Official tutorial over a homemade language syllabus.
 - Student types the code. Agents quiz and review.
-- Domain types appear early (bbox, detection, track) so later PRs are not a shock.
-- No GPU required until lesson 12.
+- Domain types appear early (tick, side, book, order) so lesson 12 is not a shock.
+- No TWS, no `ibapi` crate, no order submit until lesson 12.
+- Paper ports only (TWS 7497, Gateway 4002). Live ports are a failed lab.
 
 ## The arc
 
-| Lessons | Theme | Upstream |
+| Lessons | Theme | Wire |
 | --- | --- | --- |
 | 00 | rustfmt, clippy, test, backtrace, debugger | the PR toolchain |
-| 01–04 | rustup through enums | read Candle and opencv-rust; own the data model |
-| 05–08 | crates, iterators, `Result`, traits | API a contributor would actually open a PR with |
-| 09–11 | tests, CLI, threads | PR bar + a real pipeline on recorded detections |
-| 12 | unsafe / FFI + one contribution | RF-DETR in Candle **or** video I/O in opencv-rust |
+| 01–04 | rustup through enums | TWS docs walk; ticks; book ownership; order state |
+| 05–08 | crates, iterators, `Result`, traits | API a desk would actually review |
+| 09–11 | tests, CLI, threads | replay a recorded book without TWS |
+| 12 | paper `ibapi` | one MES paper limit; ES is size math, not a second live shot |
 
 ## Agent rules
 
@@ -43,14 +46,14 @@ When `@start-lesson N` runs:
 
 Do not implement `src/`.
 Do not invent a thirteenth parallel syllabus.
+Do not write an `ibapi` client, a book, or an order.
 
-## Contribution targets
+## Ports
 
-| Target | Why it is in this lab |
-| --- | --- |
-| `candle-transformers` + `candle-examples` | Candle already has DINOv2, YOLO-v8, SAM, SegFormer. RF-DETR is the missing real-time DETR. |
-| `opencv-rust` (`videoio`, `imgproc`, `core::Mat`) | Capture, draw boxes/masks, understand FFI `Mat`. |
-| ByteTrack / McByte in *this* repo | Association is std-only until lesson 12. McByte needs RF-DETR Seg masks. |
+| Account | TWS | Gateway |
+| --- | --- | --- |
+| Paper (allowed in 12) | 7497 | 4002 |
+| Live (forbidden) | 7496 | 4001 |
 
 ## Rubric (every lesson)
 
@@ -60,3 +63,4 @@ Advance only if the student, not the model, can:
 2. Explain the last rustc error they hit.
 3. Show green `cargo test` and clippy `-D warnings`.
 4. Re-type the core function from a blank file.
+5. Show no live port and no order submit before lesson 12 paper.

@@ -1,9 +1,9 @@
-# Lesson 09 — Tests and rustdoc: the PR bar
+# Lesson 09 — Tests and rustdoc: the bar without TWS
 
 > Official spine: [Book ch. 11](https://doc.rust-lang.org/book/ch11-00-testing.html) · [rustdoc book](https://doc.rust-lang.org/rustdoc/) · [Cargo Book — tests](https://doc.rust-lang.org/cargo/guide/tests.html)
 > Companion: Rustlings tests; clippy; rustfmt
-> Contribution target: Candle and opencv-rust both expect tests + rustdoc. This lesson is the bar for lesson 12's PR.
-> Domain hook: table-driven IoU, association, and state-machine tests are what make a tracker mergeable.
+> Wire: `ibapi` and IBKR maintainers will not run your paper account in CI. Replay is the bar
+> Domain hook: table-driven book apply + order state + MES↔ES size
 
 ## Contract
 
@@ -15,33 +15,33 @@ No adhoc `check_*.rs` scripts (see `.cursor/rules/proper-tests.mdc`).
 
 - [ ] Book ch. 11 — unit tests, integration tests, `#[should_panic]`, `Result` in tests
 - [ ] rustdoc book: what makes a doc-test
-- [ ] One Candle PR or test module (e.g. a small `candle-core` op test) — how they name tests
-- [ ] opencv-rust: find one `#[test]` or example that opens no camera
+- [ ] One `ibapi` example or test naming style (from the repo / docs.rs)
 
 ## Why this exists
 
-"It worked on my video" is not a contribution.
-Lesson 12 will ask you to open a PR against Candle or opencv-rust.
-Maintainers will look for rustfmt, clippy, rustdoc on public items, and tests that do not need a GPU or a webcam.
+"It worked on my TWS" is not a contribution and is not a lab.
+Lesson 12 will open a paper socket.
+Until then — and in CI forever — the book must replay.
 
 ## You write
 
 Bring the workspace to contribution shape:
 
-- Unit tests live next to the code (`#[cfg(test)]`)
-- Integration tests in `tests/associate.rs`, `tests/errors.rs`
+- Unit tests next to the code
+- Integration tests in `tests/book_replay.rs`, `tests/orders.rs`, `tests/paper_port.rs`
 - Every public function has rustdoc; at least two rustdoc examples that compile (`cargo test --doc`)
 - `cargo fmt --all`
 - `cargo clippy --workspace --all-targets -- -D warnings`
-- A `CONTRIBUTING-STUDENT.md` *you* write: how you will open the upstream PR (fork, branch name, what you will not include)
+- A `CONTRIBUTING-STUDENT.md` *you* write: how you will run lesson 12 (paper only), what you will not commit (account ids)
 
 Required tables:
 
-- IoU fixtures (from lesson 02), including a regression for a bug *you* actually hit
-- Association fixtures (from lesson 06)
-- `TrackState` transitions (from lesson 04)
+- Book fixtures (lesson 06), including a regression for a bug *you* actually hit
+- Order status transitions (lesson 04)
+- MES↔ES size (lesson 02)
+- `parse_port` live-vs-paper (lesson 07)
 
-Optional but recommended: a `tests/data/` JSONL clip of 10 synthetic frames that lesson 10 will reuse.
+`tests/data/` JSONL depth tape that lesson 10 will reuse.
 
 ## Plan of work
 
@@ -57,17 +57,17 @@ Optional but recommended: a `tests/data/` JSONL clip of 10 synthetic frames that
 
 ### C. Notes
 
-- [ ] List Candle's likely CI checks (fmt / test / maybe features)
-- [ ] List opencv-rust's likely pain (system OpenCV, clang) and how your PR avoids needing a camera
+- [ ] How you will keep lesson 12 tests split: `#[ignore]` or a feature `paper-tws` so default `cargo test` needs no broker
 
 ## Definition of done
 
-A stranger can run `cargo test --workspace` on a machine without a GPU or webcam and get green.
+A stranger can run `cargo test --workspace` on a machine without TWS and get green.
 Public API is rustdoc'd.
+Live ports still fail closed.
 
 ## Stretch
 
-Run `cargo tarpaulin` or `cargo llvm-cov` if you want a number.
+`cargo llvm-cov` or tarpaulin if you want a number.
 Do not chase 100%. Cover error paths.
 
 ## References
@@ -75,5 +75,4 @@ Do not chase 100%. Cover error paths.
 - https://doc.rust-lang.org/book/ch11-00-testing.html
 - https://doc.rust-lang.org/rustdoc/
 - https://doc.rust-lang.org/book/appendix-04-useful-development-tools.html
-- https://github.com/huggingface/candle
-- https://github.com/twistedfall/opencv-rust
+- https://github.com/wboayue/rust-ibapi

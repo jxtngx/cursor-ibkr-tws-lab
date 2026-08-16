@@ -18,8 +18,13 @@ This is the same contract as [cuda-spatial-intelligence-lab](https://github.com/
 It is the opposite of [cursor-fullstack-template](https://github.com/jxtngx/cursor-fullstack-template) and [deep-learning-with-cursor](https://github.com/jxtngx/deep-learning-with-cursor), whose harnesses are built to implement tickets.
 If an agent opens a PR with a complete solution you did not write, the lab failed.
 
-The destination is a first contribution to [Hugging Face Candle](https://github.com/huggingface/candle) or the official Rust bindings for OpenCV, [opencv-rust](https://github.com/twistedfall/opencv-rust).
-The application that keeps every lesson honest is Roboflow [RF-DETR](https://github.com/roboflow/rf-detr) (detection and segmentation) feeding [ByteTrack](https://github.com/FoundationVision/ByteTrack) or [McByte](https://github.com/tstanczyk95/McByte) (mask-cued ByteTrack).
+The destination is a **paper-traded MES → ES limit-order-book** on Interactive Brokers, through the official [TWS API](https://interactivebrokers.github.io/tws-api/introduction.html) and the Rust crate [`ibapi`](https://github.com/wboayue/rust-ibapi).
+Equity-index futures (MES, ES, MNQ, NQ, …) and commodity futures (MCL, CL, MGC, GC, …) share one contract and book model.
+You learn the language on a reconstructed book. You do not touch a live account in this lab.
+
+This is not trading advice.
+Paper Gateway / paper TWS only.
+A bot that can place an order is not a license to size it like a desk.
 
 ---
 
@@ -36,7 +41,7 @@ You create each crate with `cargo init` and write the tests.
 
 What lives here:
 
-- **`lessons/`** — `LESSON.md` files from toolchain (00) to an upstream PR (12).
+- **`lessons/`** — `LESSON.md` files from toolchain (00) to a paper TWS book (12).
 - **`.cursor/agents/`** — tutor, engineer, test developer, architect, scrum master.
   The tutor explains one concept and stops.
   The engineer and test developer review *your* code.
@@ -44,7 +49,7 @@ What lives here:
 - **`.cursor/commands/`** — `@start-lesson`, `@explain-concept`, `@review-rust`, `@run-ticket-plan`.
   `@start-lesson` opens the spec.
   `@run-ticket-plan` shows the next ticket and stops.
-- **`.cursor/rules/`** — always-on: no emojis, incremental changes, rustfmt + clippy, `cargo test` is the source of truth, no `unwrap` in library paths, no clone-to-compile.
+- **`.cursor/rules/`** — always-on: no emojis, incremental changes, rustfmt + clippy, `cargo test` is the source of truth, no `unwrap` in library paths, no clone-to-compile, **paper trading only**.
 - **`.cursor/skills/`** — [dev standards](.cursor/skills/rust-dev-standards.md), ownership, `Result`, traits, lifetimes, modules, Cargo, and the [curriculum plan](.cursor/skills/curriculum-plan/SKILL.md).
 
 There is no multi-agent product pipeline here.
@@ -59,23 +64,25 @@ Full table: [lessons/README.md](lessons/README.md).
 | # | Lesson | Official spine | Toward |
 | --- | --- | --- | --- |
 | 00 | [Dev standards](lessons/00-dev-standards/LESSON.md) | Appendix D, Clippy, rustfmt, Error Index | fmt, clippy, test, backtrace |
-| 01 | [Getting started](lessons/01-getting-started/LESSON.md) | Book 1–2, rustup | Walk Candle and opencv-rust |
-| 02 | [Language foundations](lessons/02-language-foundations/LESSON.md) | Book 3, RBE primitives | `BBox`, IoU |
-| 03 | [Ownership](lessons/03-ownership/LESSON.md) | Book 4 | Frames vs `Tensor` vs `Mat` |
-| 04 | [Structs and enums](lessons/04-structs-enums/LESSON.md) | Book 5–6 | RF-DETR det vs seg, track state |
-| 05 | [Crates and modules](lessons/05-crates-modules/LESSON.md) | Book 7, Cargo Book | Workspace shaped like Candle |
-| 06 | [Collections and iterators](lessons/06-collections-iterators/LESSON.md) | Book 8, 13 | ByteTrack association |
-| 07 | [Error handling](lessons/07-error-handling/LESSON.md) | Book 9 | Video, weights, empty frames |
-| 08 | [Traits and lifetimes](lessons/08-traits-lifetimes/LESSON.md) | Book 10 | `Detector` + `Tracker` API |
-| 09 | [Tests and rustdoc](lessons/09-tests-docs/LESSON.md) | Book 11, rustdoc | The PR bar |
-| 10 | [CLI and I/O](lessons/10-cli-io/LESSON.md) | Book 12, CLI book | `rftrack` + optional `VideoCapture` |
-| 11 | [Concurrency](lessons/11-concurrency/LESSON.md) | Book 15–16 | Decode / detect / track threads |
-| 12 | [Contribute](lessons/12-contribute/LESSON.md) | Book 20, Nomicon 1–3 | RF-DETR in Candle **or** video in opencv-rust |
+| 01 | [Getting started](lessons/01-getting-started/LESSON.md) | Book 1–2, rustup | Walk TWS API + `ibapi` |
+| 02 | [Language foundations](lessons/02-language-foundations/LESSON.md) | Book 3, RBE primitives | ticks, multipliers, MES vs ES |
+| 03 | [Ownership](lessons/03-ownership/LESSON.md) | Book 4 | book owns levels; updates borrow |
+| 04 | [Structs and enums](lessons/04-structs-enums/LESSON.md) | Book 5–6 | `Side`, `Tif`, `OrderStatus`, contract |
+| 05 | [Crates and modules](lessons/05-crates-modules/LESSON.md) | Book 7, Cargo Book | workspace `tick` / `book` / `order` |
+| 06 | [Collections and iterators](lessons/06-collections-iterators/LESSON.md) | Book 8, 13 | reconstruct L2 (insert/update/delete) |
+| 07 | [Error handling](lessons/07-error-handling/LESSON.md) | Book 9 | disconnect, reject, paper-only guard |
+| 08 | [Traits and lifetimes](lessons/08-traits-lifetimes/LESSON.md) | Book 10 | `MarketData` + `OrderRouter` |
+| 09 | [Tests and rustdoc](lessons/09-tests-docs/LESSON.md) | Book 11, rustdoc | replay fixtures, the PR bar |
+| 10 | [CLI and I/O](lessons/10-cli-io/LESSON.md) | Book 12, CLI book | `lob` replay on JSONL |
+| 11 | [Concurrency](lessons/11-concurrency/LESSON.md) | Book 15–16 | feed / book / router threads |
+| 12 | [Paper TWS](lessons/12-paper-tws/LESSON.md) | Book 20, Nomicon 1–3 | `ibapi` + MES→ES paper limit |
 
-Lesson 00 has no domain code.
-Lessons 01–11 are CPU-only.
-Lesson 12 is the first time weights, `unsafe`, or system OpenCV are allowed.
-McByte needs RF-DETR segmentation masks; ByteTrack needs boxes only.
+Lessons 00–11 are offline.
+They use fixtures and stubs.
+Lesson 12 is the first time TWS / IB Gateway and `ibapi` are allowed, and only against a **paper** port.
+
+MES is one-tenth the notional of ES (multiplier $5 vs $50, same $0.25 tick).
+You prove size conversion and book logic on MES before you ever mention an ES order.
 
 ## How you are supposed to work
 
@@ -93,18 +100,19 @@ read the chapter  →  attempt the exercise  →  ask SuperGrok / Cursor  →  f
 
 ### What the harness may do
 
-- Point at the exact Book chapter, Rustlings exercise, or `std` item.
+- Point at the exact Book chapter, Rustlings exercise, `std` item, or TWS API page.
 - Explain a compiler error in your words, then ask you what the ownership model is.
-- Sketch a 10–20 line example of *the concept*, never the finished exercise.
-- Review a diff you wrote and refuse clone-to-compile, hidden `unwrap`, and unexplained `unsafe`.
+- Sketch a 10–20 line example of *the concept*, never the finished book or order router.
+- Review a diff you wrote and refuse clone-to-compile, hidden `unwrap`, unexplained `unsafe`, and live-port constants.
 
 ### What the harness must not do
 
 - Implement `@start-lesson` or `@run-ticket-plan` tickets.
 - Fill in `lessons/` or `crates/` because you asked it to "just make it compile."
-- Dump RF-DETR, ByteTrack, or McByte as a complete crate.
+- Dump a complete limit-order book, `ibapi` client, or MES→ES strategy.
 - Skip ownership because it is annoying.
 - Invent a parallel curriculum that replaces the Book.
+- Connect to TWS live ports (7496 / 4001) or submit an order in any lesson except 12, and then only paper.
 
 If SuperGrok or Cursor starts writing the solution, stop it and ask for the question instead.
 
@@ -121,7 +129,7 @@ Lean on them in this order.
 | Structure | Book ch. 7–11 | 05–09 |
 | Build | Book ch. 12–14 + [Cargo Book](https://doc.rust-lang.org/cargo/) + [CLI book](https://rust-cli.github.io/book/) | 10 |
 | Systems | Book ch. 15–17 | 11 |
-| Advanced | [Nomicon](https://doc.rust-lang.org/nomicon/), [Reference](https://doc.rust-lang.org/reference/) | 12 |
+| Wire | [TWS API](https://interactivebrokers.github.io/tws-api/introduction.html) + [`ibapi`](https://docs.rs/ibapi/) · Book 20 / [Nomicon](https://doc.rust-lang.org/nomicon/) as needed | 12 |
 
 Companion drills, used *with* the chapter, not instead of it:
 
@@ -129,6 +137,10 @@ Companion drills, used *with* the chapter, not instead of it:
 - [Rust by Example](https://doc.rust-lang.org/rust-by-example/) — short programs when the Book is too much prose
 - [Compiler Error Index](https://doc.rust-lang.org/error-index.html) — every `E0xxx` you hit
 - [Edition Guide](https://doc.rust-lang.org/edition-guide/) — this repo targets current stable / edition 2024
+- [TWS API: market depth](https://interactivebrokers.github.io/tws-api/market_depth.html) — insert / update / delete
+- [TWS API: contracts](https://interactivebrokers.github.io/tws-api/basic_contracts.html) · [orders](https://interactivebrokers.github.io/tws-api/basic_orders.html)
+- [`ibapi` crate](https://github.com/wboayue/rust-ibapi) — the Rust client you will call in lesson 12
+- [ib-interface](https://github.com/jxtngx/ib-interface) — your Python TWS reference (read-only). Do not port it.
 
 ## Daily loop in Cursor
 
@@ -148,7 +160,10 @@ A useful prompt is "I read Book chapter N. Here is my code and the rustc error. 
 - **cargo**, **rustfmt**, **clippy**, **rust-analyzer** in Cursor.
 - **No extra crates** until the lesson that names them.
   Prefer `std`.
-- OpenCV and Candle CUDA features are optional until lesson 12.
+  `ibapi` is lesson 12.
+- TWS or IB Gateway **paper** is optional until lesson 12.
+  Paper TWS port **7497**. Paper Gateway port **4002**.
+  Live ports 7496 / 4001 are out of scope.
 - Open this repo in Cursor so `.cursor/` rules, agents, and commands load.
 
 ```bash
@@ -163,14 +178,14 @@ cargo --version
 .cursor/
   agents/      # tutor and reviewers — they do not implement
   commands/    # start-lesson, explain-concept, review-rust
-  rules/       # always-on Rust and lab rules
+  rules/       # always-on Rust, lab, and paper-only rules
   skills/      # Book-aligned notes + curriculum-plan
 lessons/
   README.md
   00-dev-standards/LESSON.md
   01-getting-started/LESSON.md
   ...
-  12-contribute/LESSON.md
+  12-paper-tws/LESSON.md
   */src/       # you create these
 ```
 
@@ -183,6 +198,7 @@ A lesson is done when *you* can do all of this without the model in the room:
 - [ ] `cargo test` and `cargo clippy --all-targets -- -D warnings` are clean
 - [ ] No `unwrap` you cannot defend, no `clone` that exists to silence the borrow checker
 - [ ] You can write the same program again from a blank file
+- [ ] No live TWS port, no hardcoded account number, no order submit outside lesson 12 paper
 
 If you cannot, you are not done, even if the tests pass because an agent wrote them.
 

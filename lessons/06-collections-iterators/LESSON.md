@@ -1,94 +1,80 @@
-# Lesson 06 — Collections and iterators: ByteTrack association
+# Lesson 06 — Collections and iterators: reconstruct the book
 
 > Official spine: [Book ch. 8](https://doc.rust-lang.org/book/ch08-00-common-collections.html) · [Book ch. 13](https://doc.rust-lang.org/book/ch13-00-functional-features.html)
 > Companion: Rustlings vecs, hashmaps, iterators; [RBE — Iterators](https://doc.rust-lang.org/rust-by-example/trait/iter.html)
-> Contribution target: the association kernel of ByteTrack, in `std`, good enough to later sit under a Candle example
-> Domain hook: ByteTrack matches *every* box, high score first, then low score. McByte will add a mask cue on top of this, not instead of it.
+> Wire: [TWS market depth](https://interactivebrokers.github.io/tws-api/market_depth.html) — operation 0 insert, 1 update, 2 delete; side 0 bid, 1 ask; `position` is the row index
+> Domain hook: this is the algorithm `reqMarketDepth` expects you to run. No TWS required
 
 ## Contract
 
-`std` only. No ndarray, no nalgebra, no Hungarian crate unless you implement the assignment yourself and can explain it.
-The tutor may not write `associate`.
-A greedy IoU matcher is acceptable if documented; a real Hungarian is stretch.
+`std` only. `BTreeMap` / `Vec` are the point.
+The tutor may not write `apply`.
+A `BTreeMap<i64, u32>` per side (price ticks → size) is acceptable if you also honor *position* for TWS-shaped updates. Document which representation you chose and why.
 
 ## Read first (do not skip)
 
-- [ ] Book ch. 8 — `Vec`, `String`, `HashMap`
-- [ ] Book ch. 13 — closures, iterators, `Iterator` adapters
-- [ ] ByteTrack paper §3 (two-stage association): https://arxiv.org/abs/2110.06864
-- [ ] Optional: Roboflow ByteTrack note: https://trackers.roboflow.com/latest/trackers/bytetrack/
+- [ ] Book ch. 8 — `Vec`, `String`, `HashMap` (and look up `BTreeMap`)
+- [ ] Book ch. 13 — closures, iterators, adapters
+- [ ] TWS market depth page in full. Write the three operations in comments *before* code
 
 ## Why this exists
 
-You do not need a GPU to learn MOT.
-RF-DETR will only be useful in this lab if something consumes its boxes every frame.
-This lesson is that something: `HashMap<TrackId, Track>`, a predicted box, IoU, two thresholds.
-
-McByte ([arxiv 2506.01373](https://arxiv.org/abs/2506.01373)) is ByteTrack plus a temporally propagated *mask* as an extra association cue.
-If ByteTrack is not correct, McByte is cosplay.
+You do not need a broker to learn a book.
+TWS sends incremental row edits, not a full snapshot every time (after the initial rows).
+If insert/delete shift is wrong, your best bid is a ghost and a MES limit sits on a level that does not exist.
 
 ## You write
 
-In the workspace from lesson 05 (or `lessons/06-collections-iterators` if you have not split crates yet):
+In the workspace from lesson 05 (or `lessons/06-collections-iterators`):
 
 ```text
-fn associate(
-    tracks: &HashMap<TrackId, Track>,
-    detections: &[Detection],
-    high_thresh: f32,
-    low_thresh: f32,
-    match_iou: f32,
-) -> AssocResult
+fn apply(&mut self, upd: DepthUpdate) -> Result<(), BookError>
 ```
 
-`AssocResult` contains matched pairs, unmatched track ids, unmatched detections.
+Required behavior (TWS-shaped):
 
-Required behavior:
+1. `operation = 0` insert at `position` (existing rows at that index and below shift away from the touch, or follow the TWS rule you documented)
+2. `operation = 1` update price/size at `position`
+3. `operation = 2` delete at `position` (later rows shift toward the touch)
+4. Side 0 = bid, 1 = ask (or your `Side`)
+5. Out-of-range position is `Err`, not a panic
+6. After applies: `best_bid`, `best_ask`, `spread_ticks`, `bid_size_at(ticks)`, `imbalance` (top-N size bid−ask) / (bid+ask)
 
-1. Split detections into high (`score >= high_thresh`) and low (`low_thresh <= score < high_thresh`). Drop below `low_thresh`.
-2. Match high detections to tracks by IoU ≥ `match_iou`.
-3. Match remaining tracks to low detections the same way.
-4. Unmatched high detections become new tracks (caller can assign ids).
-5. Unmatched tracks are misses (lesson 04 `on_miss`).
-
-Use iterators for filter/partition/collect.
-Tests with hand-built frames. No video.
+Use iterators for sums and filters.
+Tests from a hand-built tape. No socket.
 
 ## Plan of work
 
 ### A. Read
 
-- [ ] Implement two Book ch. 8 exercises (mean of a list, word count) yourself, then stop
-- [ ] Write the two-stage algorithm in comments *before* code
+- [ ] Implement two Book ch. 8 exercises yourself, then stop
+- [ ] Write the insert/update/delete shifting rules in comments
 
 ### B. Tests (table-driven)
 
-- [ ] One track, one high det, IoU 1.0 → match
-- [ ] One track, only a low-score det that overlaps → second-stage match (the ByteTrack point)
-- [ ] Low-score det with no overlap → unmatched, not a new track
-- [ ] High-score det with no overlap → new track
-- [ ] Two tracks, two dets, crossing IoUs — document how ties break
+- [ ] Insert three bid levels, best bid is the highest price (or the row-0 bid — **document TWS row 0 = inside**)
+- [ ] Update size at position 0
+- [ ] Delete position 0, the old position 1 becomes best
+- [ ] Insert at position 0 pushes the old inside down
+- [ ] Ask side independent of bid
+- [ ] Spread and imbalance on a known book
 
 ### C. Notes
 
-- [ ] Where Kalman prediction would plug in (you may stub `predict()` as "box unchanged")
-- [ ] One sentence McByte would add: a mask-overlap term next to IoU
+- [ ] TWS: "we cannot guarantee every price quoted will be displayed"; odd lots excluded. What that means for your tests
+- [ ] Smart depth (`isSmartDepth`) — one sentence, you will not implement exchange MPIDs this week
 
 ## Definition of done
 
-You can explain ByteTrack's two stages to someone who has only used SORT.
-`cargo test` covers high-only, low-recovery, and spawn/kill.
+You can apply a 10-line fixture and get the same best bid/ask twice.
+`cargo test` covers insert, update, delete, and an out-of-range error.
 
 ## Stretch
 
-Read McByte §3 enough to name the extra cue (propagated mask).
-Add a `fn mask_cue_score(...)` stub that returns `0.0` and a rustdoc pointing at the paper. Do not fake the propagation.
+Store a `BTreeMap` *and* a `Vec` of positions and keep them in sync — or argue in `NOTES.md` why one is enough.
 
 ## References
 
 - https://doc.rust-lang.org/book/ch08-00-common-collections.html
 - https://doc.rust-lang.org/book/ch13-00-functional-features.html
-- https://arxiv.org/abs/2110.06864
-- https://github.com/FoundationVision/ByteTrack
-- https://arxiv.org/abs/2506.01373
-- https://github.com/tstanczyk95/McByte
+- https://interactivebrokers.github.io/tws-api/market_depth.html

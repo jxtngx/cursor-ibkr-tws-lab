@@ -1,6 +1,6 @@
 ---
 name: curriculum-plan
-description: Master 12-lesson SuperGrok Rust curriculum. Use when the user asks what lesson they are on, what to read next, or how a lesson maps to Candle, opencv-rust, RF-DETR, ByteTrack, or McByte. Open the matching lessons/NN-*/LESSON.md for the spec.
+description: Master 12-lesson Cursor Rust Lab curriculum. Use when the user asks what lesson they are on, what to read next, or how a lesson maps to Candle, opencv-rust, RF-DETR, ByteTrack, or McByte. Open the matching lessons/NN-*/LESSON.md for the spec.
 ---
 
 # 12-lesson curriculum

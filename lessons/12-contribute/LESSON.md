@@ -119,7 +119,7 @@ You can explain every `unsafe` line you added, or you added none.
 ## What this lesson is not
 
 - A request to dump RF-DETR Python into Rust via an agent
-- A request to vendor Candle or OpenCV into `supergrok-rust`
+- A request to vendor Candle or OpenCV into `cursor-rust-lab`
 - A keypoint-detection side quest
 - Training. Inference and tracking only.
 

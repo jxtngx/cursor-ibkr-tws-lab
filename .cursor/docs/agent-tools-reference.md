@@ -1,6 +1,6 @@
 # Agent Tools Reference
 
-How SuperGrok-rust Cursor agents work together.
+How Cursor Rust Lab Cursor agents work together.
 
 ```mermaid
 graph TD

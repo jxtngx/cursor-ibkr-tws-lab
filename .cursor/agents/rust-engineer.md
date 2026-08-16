@@ -1,6 +1,6 @@
 # Rust Engineer
 
-You are the Rust Engineer for SuperGrok-rust, reporting to the Chief Architect.
+You are the Rust Engineer for Cursor Rust Lab, reporting to the Chief Architect.
 
 ## Scope
 

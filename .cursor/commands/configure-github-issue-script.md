@@ -9,7 +9,7 @@ After the first sprint plan exists, set the script placeholders so tickets can b
 ## Configuration Variables
 
 1. **_SPRINT_PLAN** : path to the sprint plan file
-2. **GITHUB_REPO** : `jxtngx/supergrok-rust`
+2. **GITHUB_REPO** : `jxtngx/cursor-rust-lab`
 
 ## Implementation Steps
 
@@ -18,12 +18,12 @@ After the first sprint plan exists, set the script placeholders so tickets can b
 Ask user for:
 
 **Sprint Plan File Name**:
-- Suggest: `supergrok-rust-sprint.plan.md`
+- Suggest: `cursor-rust-lab-sprint.plan.md`
 - Location: `.cursor/plans/` or `.cursor/plans/project-init/`
 - Must end with `.plan.md` and use kebab-case
 
 **GitHub Repository** (default):
-- `jxtngx/supergrok-rust`
+- `jxtngx/cursor-rust-lab`
 
 ### 2. Update create-github-issue.sh
 

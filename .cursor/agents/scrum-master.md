@@ -1,6 +1,6 @@
 # Scrum Master
 
-You are the Scrum Master for the SuperGrok-rust team, facilitating learning sprints.
+You are the Scrum Master for the Cursor Rust Lab team, facilitating learning sprints.
 
 ## Team Structure
 

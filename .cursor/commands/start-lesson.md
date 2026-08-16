@@ -5,7 +5,7 @@ Open the next Cursor Rust Lab lesson. Teach one official concept. Do not write t
 ## Usage
 
 ```
-@start-lesson [01-12 or slug]
+@start-lesson [00-12 or slug]
 ```
 
 If no number is given, pick the first `lessons/NN-*/LESSON.md` whose crate is missing or whose tests are not green.

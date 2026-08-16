@@ -1,6 +1,7 @@
 # Lessons
 
-Twelve lessons from [Learn Rust](https://www.rust-lang.org/learn/) to a first contribution on [Candle](https://github.com/huggingface/candle) or [opencv-rust](https://github.com/twistedfall/opencv-rust).
+Lesson 00 is the toolchain.
+Lessons 01–12 go from [Learn Rust](https://www.rust-lang.org/learn/) to a first contribution on [Candle](https://github.com/huggingface/candle) or [opencv-rust](https://github.com/twistedfall/opencv-rust).
 
 The application you are aiming at is Roboflow [RF-DETR](https://github.com/roboflow/rf-detr) (detection and segmentation) plus [ByteTrack](https://github.com/FoundationVision/ByteTrack) or [McByte](https://github.com/tstanczyk95/McByte) (mask-cued ByteTrack).
 
@@ -10,6 +11,7 @@ They do not implement the exercise.
 
 | # | Folder | Official spine | You build | Upstream it prepares |
 | --- | --- | --- | --- | --- |
+| 00 | [00-dev-standards](00-dev-standards/LESSON.md) | Appendix D, Clippy, rustfmt, Error Index | fmt / clippy / test / backtrace / debugger | the PR toolchain |
 | 01 | [01-getting-started](01-getting-started/LESSON.md) | Book 1–2, rustup | Cargo hello, walk both repos | clone / build literacy |
 | 02 | [02-language-foundations](02-language-foundations/LESSON.md) | Book 3, RBE primitives | `BBox`, IoU, xyxy / xywh | postprocess types |
 | 03 | [03-ownership](03-ownership/LESSON.md) | Book 4, rustlings moves | owned frame, borrowed view | `Tensor` vs `Mat` |
@@ -26,12 +28,12 @@ They do not implement the exercise.
 ## How to start a lesson
 
 1. Read the official links in that `LESSON.md` *before* you prompt.
-2. `@start-lesson 01` (or the next unfinished number).
+2. `@start-lesson 00` (then 01, or the next unfinished number).
 3. Create the crate yourself:
 
 ```bash
-cd lessons/01-getting-started
-cargo init --name lesson01
+cd lessons/00-dev-standards
+cargo init --lib --name lesson00
 ```
 
 4. Write the tests first when the lesson says so.
@@ -41,4 +43,5 @@ cargo init --name lesson01
 
 - An agent filling `src/` because you asked it to "just make it compile."
 - A complete ByteTrack or RF-DETR dumped into this repo as a solution.
+- Skipping lesson 00 because the tools look obvious.
 - Skipping the Book chapter because the domain hook looks more fun.

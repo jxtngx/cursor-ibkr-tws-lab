@@ -30,13 +30,13 @@ The spine is [The Rust Programming Language](https://doc.rust-lang.org/book/) ("
 [Rustlings](https://github.com/rust-lang/rustlings/) and [Rust by Example](https://doc.rust-lang.org/rust-by-example/) are the drills.
 The [standard library](https://doc.rust-lang.org/std/), [Cargo Book](https://doc.rust-lang.org/cargo/), and later the [Rustonomicon](https://doc.rust-lang.org/nomicon/) are how beginners become advanced users without a side quest of blog posts.
 
-Twelve lesson specs live in [`lessons/`](lessons/README.md).
+Thirteen lesson specs live in [`lessons/`](lessons/README.md) (00 is the toolchain).
 They are specs, not solutions.
 You create each crate with `cargo init` and write the tests.
 
 What lives here:
 
-- **`lessons/`** — twelve `LESSON.md` files from rustup to an upstream PR.
+- **`lessons/`** — `LESSON.md` files from toolchain (00) to an upstream PR (12).
 - **`.cursor/agents/`** — tutor, engineer, test developer, architect, scrum master.
   The tutor explains one concept and stops.
   The engineer and test developer review *your* code.
@@ -45,19 +45,20 @@ What lives here:
   `@start-lesson` opens the spec.
   `@run-ticket-plan` shows the next ticket and stops.
 - **`.cursor/rules/`** — always-on: no emojis, incremental changes, rustfmt + clippy, `cargo test` is the source of truth, no `unwrap` in library paths, no clone-to-compile.
-- **`.cursor/skills/`** — ownership, `Result`, traits, lifetimes, modules, Cargo, and the [curriculum plan](.cursor/skills/curriculum-plan/SKILL.md).
+- **`.cursor/skills/`** — [dev standards](.cursor/skills/rust-dev-standards.md), ownership, `Result`, traits, lifetimes, modules, Cargo, and the [curriculum plan](.cursor/skills/curriculum-plan/SKILL.md).
 
 There is no multi-agent product pipeline here.
 There is no "implement the sprint" loop.
 If you want that, use the fullstack or deep-learning repos.
 
-## The 12 lessons
+## The 13 lessons
 
 Official index: [rust-lang.org/learn](https://www.rust-lang.org/learn/).
 Full table: [lessons/README.md](lessons/README.md).
 
 | # | Lesson | Official spine | Toward |
 | --- | --- | --- | --- |
+| 00 | [Dev standards](lessons/00-dev-standards/LESSON.md) | Appendix D, Clippy, rustfmt, Error Index | fmt, clippy, test, backtrace |
 | 01 | [Getting started](lessons/01-getting-started/LESSON.md) | Book 1–2, rustup | Walk Candle and opencv-rust |
 | 02 | [Language foundations](lessons/02-language-foundations/LESSON.md) | Book 3, RBE primitives | `BBox`, IoU |
 | 03 | [Ownership](lessons/03-ownership/LESSON.md) | Book 4 | Frames vs `Tensor` vs `Mat` |
@@ -71,6 +72,7 @@ Full table: [lessons/README.md](lessons/README.md).
 | 11 | [Concurrency](lessons/11-concurrency/LESSON.md) | Book 15–16 | Decode / detect / track threads |
 | 12 | [Contribute](lessons/12-contribute/LESSON.md) | Book 20, Nomicon 1–3 | RF-DETR in Candle **or** video in opencv-rust |
 
+Lesson 00 has no domain code.
 Lessons 01–11 are CPU-only.
 Lesson 12 is the first time weights, `unsafe`, or system OpenCV are allowed.
 McByte needs RF-DETR segmentation masks; ByteTrack needs boxes only.
@@ -113,6 +115,7 @@ Lean on them in this order.
 
 | Stage | Official material | Lessons |
 | --- | --- | --- |
+| Tools | [Appendix D](https://doc.rust-lang.org/book/appendix-04-useful-development-tools.html), [Clippy](https://doc.rust-lang.org/clippy/), [rustfmt](https://rust-lang.github.io/rustfmt/), [Error Index](https://doc.rust-lang.org/error-index.html) | 00 |
 | Start | [Install](https://www.rust-lang.org/learn/get-started) + Book ch. 1–3 | 01–02 |
 | Own it | Book ch. 4–6 + [Rustlings](https://github.com/rust-lang/rustlings/) | 03–04 |
 | Structure | Book ch. 7–11 | 05–09 |
@@ -129,7 +132,7 @@ Companion drills, used *with* the chapter, not instead of it:
 
 ## Daily loop in Cursor
 
-1. `@start-lesson 01` — the Rust Tutor opens the spec, checks that you read the chapter, explains one concept, and stops.
+1. `@start-lesson 00` — the Rust Tutor opens the spec, checks that you read Appendix D, and stops. Then 01.
 2. You `cargo init` in that folder and write the code.
 3. `@explain-concept <idea>` when you are stuck on *one* idea.
 4. `@review-rust` after `cargo test` is green.
@@ -164,6 +167,7 @@ cargo --version
   skills/      # Book-aligned notes + curriculum-plan
 lessons/
   README.md
+  00-dev-standards/LESSON.md
   01-getting-started/LESSON.md
   ...
   12-contribute/LESSON.md

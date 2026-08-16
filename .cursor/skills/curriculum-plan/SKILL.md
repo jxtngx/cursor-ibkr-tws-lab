@@ -1,9 +1,9 @@
 ---
 name: curriculum-plan
-description: Master 12-lesson Cursor Rust Lab curriculum. Use when the user asks what lesson they are on, what to read next, or how a lesson maps to Candle, opencv-rust, RF-DETR, ByteTrack, or McByte. Open the matching lessons/NN-*/LESSON.md for the spec.
+description: Master 13-lesson Cursor Rust Lab curriculum (00 toolchain, 01-12 Book to contribution). Use when the user asks what lesson they are on, what to read next, or how a lesson maps to Candle, opencv-rust, RF-DETR, ByteTrack, or McByte. Open the matching lessons/NN-*/LESSON.md for the spec.
 ---
 
-# 12-lesson curriculum
+# 13-lesson curriculum
 
 Source of truth for sequence: [lessons/README.md](../../../lessons/README.md).
 Official index: [Learn Rust](https://www.rust-lang.org/learn/).
@@ -25,6 +25,7 @@ Application destination: Roboflow RF-DETR (detection + segmentation) feeding Byt
 
 | Lessons | Theme | Upstream |
 | --- | --- | --- |
+| 00 | rustfmt, clippy, test, backtrace, debugger | the PR toolchain |
 | 01–04 | rustup through enums | read Candle and opencv-rust; own the data model |
 | 05–08 | crates, iterators, `Result`, traits | API a contributor would actually open a PR with |
 | 09–11 | tests, CLI, threads | PR bar + a real pipeline on recorded detections |

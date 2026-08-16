@@ -5,6 +5,8 @@
 > Contribution target: literacy in both upstream repos
 > Domain hook: you cannot contribute to Candle or opencv-rust if you cannot build *this* crate
 
+Prerequisite: [lesson 00](../00-dev-standards/LESSON.md). `cargo fmt`, clippy, and `RUST_BACKTRACE` should already be ordinary.
+
 ## Contract
 
 You type the program.
@@ -13,6 +15,7 @@ The tutor may not finish the guessing-game chapter for you.
 
 ## Read first (do not skip)
 
+- [ ] Lesson 00 `NOTES.md` exists (fmt, clippy, a backtrace). If not, stop and finish 00
 - [ ] [Learn Rust](https://www.rust-lang.org/learn/) landing page — know what the Book, Rust by Example, and Rustlings each are
 - [ ] Book ch. 1 — install, Hello world, Hello Cargo
 - [ ] Book ch. 2 — the guessing game, *typed by you*

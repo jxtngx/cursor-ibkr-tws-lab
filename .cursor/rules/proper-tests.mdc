@@ -1,0 +1,49 @@
+---
+description: Write proper tests with cargo test, not adhoc scripts
+globs: "**/*.rs"
+alwaysApply: false
+---
+
+# Proper Testing
+
+When code changes require tests:
+
+## Do
+
+- Write tests next to the code (`#[cfg(test)] mod tests`) or in `tests/`
+- Follow existing crate test structure
+- Use `cargo test` conventions
+- Name integration files `tests/<behavior>.rs`
+- Name unit tests `fn test_*` or descriptive snake_case
+
+## Do Not
+
+- Create adhoc test scripts in project root
+- Write temporary `check_*.rs` binaries
+- Create `verify_*.rs` throwaway crates
+- Add test code to `fn main()` in examples unless the example is the lesson
+
+## Test Location
+
+```
+src/
+  lib.rs                 # unit tests in #[cfg(test)]
+  <module>.rs            # module-level unit tests
+tests/
+  <behavior>.rs          # integration tests
+```
+
+## Example
+
+```rust
+// src/ownership.rs
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn borrow_does_not_move() {
+        // Test implementation
+    }
+}
+```

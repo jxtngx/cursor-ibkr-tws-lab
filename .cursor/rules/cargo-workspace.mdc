@@ -1,0 +1,39 @@
+---
+description: Cargo, crate layout, and workspace conventions
+globs: "**/Cargo.toml"
+alwaysApply: false
+---
+
+# Cargo Workspace
+
+## Layout
+
+```
+Cargo.toml          # workspace root when multiple crates exist
+crates/<name>/      # member crates
+lessons/<name>/     # lesson crates (bin or lib)
+tests/              # integration tests for the crate they belong to
+```
+
+## Conventions
+
+- Edition 2024 (or the edition pinned in workspace Cargo.toml)
+- Pin versions in the workspace `[workspace.dependencies]` table
+- Binary lessons live in `lessons/`; reusable code lives in `crates/`
+- Do not commit `target/` or `Cargo.lock` for libraries unless this is a binary workspace
+
+## Commands
+
+| Goal | Command |
+|------|---------|
+| Check | `cargo check --workspace` |
+| Test | `cargo test --workspace` |
+| Lint | `cargo clippy --workspace --all-targets -- -D warnings` |
+| Format | `cargo fmt --all` |
+| Docs | `cargo doc --workspace --no-deps --open` |
+
+## Constraints
+
+- Do not add dependencies without stating why
+- Prefer std before adding a crate
+- Features are explicit; no implicit default-feature pileups

@@ -3,7 +3,7 @@
 > Official spine: [Book ch. 9](https://doc.rust-lang.org/book/ch09-00-error-handling.html) · [RBE — Error handling](https://doc.rust-lang.org/rust-by-example/error.html)
 > Companion: Rustlings error-handling, options
 > Wire: TWS error codes / notices (2100–2169 informational; 1100-series connectivity). `ibapi` surfaces `Notice` / `Error`
-> Domain hook: a missing paper port, a live port, a bad contract, a rejected limit — all recoverable. A live submit is not
+> Domain hook: a live port, a bad contract, a rejected limit, a quote outside the session window — all recoverable. A socket is not in this lab
 
 ## Contract
 
@@ -16,14 +16,13 @@ The tutor may not design your error enum.
 
 - [ ] Book ch. 9 — panic vs `Result`, `?`, custom errors
 - [ ] RBE error handling
-- [ ] TWS API error / system codes enough to name: connectivity broken, farm data, order reject
+- [ ] TWS API error / system codes enough to name: connectivity broken, farm data, order reject (you will *map* these later, not receive them here)
 - [ ] `ibapi` README on `Notice` vs hard errors (read only)
 
 ## Why this exists
 
-Lesson 12 will connect to paper TWS and submit one limit.
-Both fail in boring ways: port closed, client id in use, contract not found, order rejected, pacing.
-This lesson makes those failures a type, and makes **live ports** a type you refuse.
+A later paper connect fails in boring ways: port closed, client id in use, contract not found, order rejected, pacing.
+This lesson makes those failures a type *before* a socket exists, and makes **live ports** and **session violations** types you refuse.
 
 ## You write
 
@@ -37,11 +36,12 @@ type Result<T> = std::result::Result<T, WireError>;
 Required variants (names yours):
 
 - connect failed (IO)
-- live port refused (`7496`, `4001` — you reject *before* connect)
+- live port refused (`7496`, `4001` — you reject *before* anyone could connect)
 - unknown symbol / contract
 - book apply failed (from lesson 06)
 - order rejected (string or code)
 - paper-only violation
+- session closed (quote or order outside the allowed window — window logic is lesson 12; the *variant* exists now)
 
 Implement `Display` + `std::error::Error`.
 Implement `From<std::io::Error>`.
@@ -71,7 +71,7 @@ Fixtures under `tests/data/`.
 
 ### C. Notes
 
-- [ ] Copy *signatures only* of `ibapi` `Client::connect` as you found them
+- [ ] Copy *signatures only* of `ibapi` `Client::connect` as you found them (for `NOTES.md`, not to call)
 - [ ] Write how *your* `WireError` would wrap connect failure
 - [ ] List two TWS notice codes you will treat as non-fatal later
 

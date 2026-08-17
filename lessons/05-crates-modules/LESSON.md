@@ -2,84 +2,74 @@
 
 > Official spine: [Book ch. 7](https://doc.rust-lang.org/book/ch07-00-managing-growing-projects-with-packages-crates-and-modules.html) · [Cargo Book — Starting](https://doc.rust-lang.org/cargo/guide/creating-a-new-package.html) · [Cargo Book — Workspaces](https://doc.rust-lang.org/cargo/reference/workspaces.html)
 > Companion: Rustlings modules
-> Wire: read how [`ibapi`](https://github.com/wboayue/rust-ibapi) splits `contracts`, `orders`, `market_data`, `Client`. You are not adding that crate yet
-> Domain hook: `tick`, `book`, `order` are the three crates a futures stack actually needs
+> Wire (reading): how [`ibapi`](https://github.com/wboayue/rust-ibapi) splits `contracts`, `orders`, `market_data`. You do not add that crate
+> Domain hook: `tick`, `book`, `order`, `risk` — the socket never lives in `book`
 
 ## Contract
 
 You create the workspace.
-The tutor does not edit `Cargo.toml` for you after the first "where does [workspace] go" hint.
-Do not add `ibapi` as a dependency yet.
+The tutor does not edit `Cargo.toml` after one hint.
+No `ibapi` / `prost`.
 
 ## Read first (do not skip)
 
-- [ ] Book ch. 7 — packages, crates, modules, `pub`, paths
-- [ ] Cargo Book: creating a package + workspaces
-- [ ] Walk `ibapi`'s module map on docs.rs (`contracts`, `orders`, client, subscriptions)
-- [ ] Walk [ib-interface](https://github.com/jxtngx/ib-interface) only far enough to see it is a *different language*. Do not port modules
+- [ ] Book ch. 7 — packages, crates, modules, `pub`
+- [ ] Cargo Book: package + workspaces
+- [ ] `ibapi` module map on docs.rs (names only)
 
 ## Why this exists
 
-A useful trading crate is a *small* public surface.
-`ibapi` puts wire types in the client crate.
-Your *domain* (ticks, book apply, order state) should not import a socket.
-Lesson 12 is an adapter. This lesson builds that reflex.
+A later protobuf adapter is a *small* crate on the edge.
+`OrderBook::apply` and `Quoter` must not import a socket.
 
 ## You write
 
-Under `lessons/05-crates-modules/` (keep the repo root clean):
+Under `lessons/05-crates-modules/`:
 
 ```
-tick/     # Tick, FuturesSpec, MES/ES math (lessons 02/04)
-book/     # Book, Level, DepthUpdate (lesson 03)
-order/    # Side, Tif, Order, OrderStatus
+tick/     # Tick, FuturesSpec, MES/ES math
+book/     # OrderBook, DOMLevel, DepthUpdate
+order/    # Side, Tif, Order, Inventory
+risk/     # empty public surface + one placeholder test (session/force-flat land in 12)
 ```
 
 Rules:
 
 - Virtual workspace
-- `book` and `order` may depend on `tick` — no cycles
-- `lib.rs` is a map (`mod` + `pub use` of the small API)
-- Internal helpers stay private
+- `book` and `order` may depend on `tick`; `risk` may depend on `order` — no cycles
+- `lib.rs` is a map
 - Each crate has at least one unit test
 
-Also write `NOTES.md`:
+`NOTES.md`:
 
-- Where an `ibapi` adapter would live later (`wire/` or `ibkr/`, *not* inside `book`)
-- Which `ibapi` module maps to each of your crates
-- Why `book` must not depend on `ibapi`
+- Where a later `wire/` adapter would live (*not* inside `book`)
+- Which `ibapi` module maps to which crate
+- Why `book` must never depend on `ibapi`
 
 ## Plan of work
 
-### A. Read ch. 7 until you can answer
+### A. Read ch. 7
 
 - [ ] `mod foo;` vs `mod foo { }`
 - [ ] `pub(crate)` vs `pub`
-- [ ] What a virtual workspace is
+- [ ] Virtual workspace
 
-### B. Split the types you already wrote
+### B. Split types by hand
 
-- [ ] Copy by hand from earlier lessons. Do not ask an agent to "just move the files."
+- [ ] Copy from earlier lessons yourself
 - [ ] `cargo test --workspace`
 - [ ] `cargo clippy --workspace --all-targets -- -D warnings`
 
-### C. Read-only `ibapi` map
+### C. Map
 
-- [ ] List the modules you will call in lesson 12 (`Client`, `Contract::futures`, orders, market depth if you found it)
-- [ ] One sentence: your `Book::apply` stays yours; `ibapi` only produces `DepthUpdate`s
+- [ ] One sentence: `OrderBook::apply` stays yours; a later adapter only produces `DepthUpdate`s
 
 ## Definition of done
 
-`tree` of your workspace makes sense to a stranger.
-You can say, without opening GitHub, which crate must never import `ibapi`.
-
-## Stretch
-
-Sketch `wire/README.md` with the *files* you would add in lesson 12. No code.
+A stranger can read the workspace and see where protobuf would plug in without opening `book`.
 
 ## References
 
 - https://doc.rust-lang.org/book/ch07-00-managing-growing-projects-with-packages-crates-and-modules.html
 - https://doc.rust-lang.org/cargo/reference/workspaces.html
 - https://docs.rs/ibapi/
-- https://github.com/wboayue/rust-ibapi

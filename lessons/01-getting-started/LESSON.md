@@ -3,7 +3,7 @@
 > Official spine: [Learn Rust](https://www.rust-lang.org/learn/) · [Book ch. 1](https://doc.rust-lang.org/book/ch01-00-getting-started.html) · [Book ch. 2](https://doc.rust-lang.org/book/ch02-00-guessing-game-tutorial.html) · [Install](https://www.rust-lang.org/learn/get-started)
 > Companion: [Rustlings](https://github.com/rust-lang/rustlings/) setup
 > Wire: [TWS API introduction](https://interactivebrokers.github.io/tws-api/introduction.html) · [`ibapi` README](https://github.com/wboayue/rust-ibapi) · [ib-interface](https://github.com/jxtngx/ib-interface) (Python, read-only)
-> Domain hook: you cannot call TWS if Cargo is still magic, and you cannot call live TWS in this lab at all
+> Domain hook: you cannot *later* call TWS if Cargo is still magic, and you do not call TWS in this lab at all
 
 Prerequisite: [lesson 00](../00-dev-standards/LESSON.md). `cargo fmt`, clippy, and `RUST_BACKTRACE` should already be ordinary.
 
@@ -45,10 +45,10 @@ Deliverables:
 2. The Book ch. 2 guessing game, in this crate (or `src/bin/guess.rs`).
 3. A short `NOTES.md` *you* write, not an agent:
    - Paper TWS port **7497** and paper Gateway port **4002**. Live 7496 / 4001 are forbidden
-   - How `ibapi` 3.x is added (`ibapi = "3.3"` or the sync feature). You do **not** add it to this crate yet
+   - How `ibapi` 3.x would be added later (`ibapi = "3.3"` or the sync feature). You do **not** add it to this crate
    - Where `Contract::futures("ES")` lives in the README
-   - One sentence: ib-interface is Python + official `ibapi` protobuf; this lab uses the *Rust* `ibapi` crate in lesson 12
-   - You do **not** need TWS running yet
+   - One sentence: ib-interface is Python; this lab's later wire is the *Rust* `ibapi` crate or prost types — not in `Cargo.toml` here
+   - You do **not** run TWS from Rust in any lesson
 
 ## Plan of work
 
@@ -77,12 +77,12 @@ Deliverables:
 ## Definition of done
 
 You can recreate the guessing game from a blank file.
-You can point at paper vs live ports and say which crate you will add in lesson 12.
+You can point at paper vs live ports and say which crate you would add *after* this lab.
 
 ## Stretch
 
-Install TWS or IB Gateway **paper** and enable the API port.
-Do not connect from Rust yet.
+Optionally install TWS or IB Gateway **paper** and enable the API port so you know what the docs describe.
+Do not connect from Rust.
 Record in `NOTES.md` whether the paper login works.
 
 ## References

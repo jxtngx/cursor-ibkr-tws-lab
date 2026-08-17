@@ -36,10 +36,11 @@ Bring the workspace to contribution shape:
 
 Required tables:
 
-- Book fixtures (lesson 06), including a regression for a bug *you* actually hit
-- Order status transitions (lesson 04)
+- Book fixtures (lesson 06), including microprice / imbalance and a regression for a bug *you* hit
+- Order status + inventory (lesson 04)
 - MES↔ES size (lesson 02)
 - `parse_port` live-vs-paper (lesson 07)
+- Quoter shade + flatten-not-here (lesson 08)
 
 `tests/data/` JSONL depth tape that lesson 10 will reuse.
 
@@ -57,7 +58,7 @@ Required tables:
 
 ### C. Notes
 
-- [ ] How you will keep lesson 12 tests split: `#[ignore]` or a feature `paper-tws` so default `cargo test` needs no broker
+- [ ] How default `cargo test --workspace` stays green with no broker (it must — there is no socket in this lab)
 
 ## Definition of done
 

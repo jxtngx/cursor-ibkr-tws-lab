@@ -1,38 +1,40 @@
 ---
 name: curriculum-plan
-description: Master 13-lesson Cursor Rust Lab curriculum (00 toolchain, 01-12 Book to a paper MES-ES limit-order book on IBKR via ibapi). Use when the user asks what lesson they are on, what to read next, or how a lesson maps to TWS, ibapi, MES, ES, or market depth. Open the matching lessons/NN-*/LESSON.md for the spec.
+description: Master 13-lesson Cursor Rust Lab curriculum (00 toolchain, 01-12 Book to a MES-ES OrderBook + strategy crate). Use when the user asks what lesson they are on, what to read next, or how a lesson maps to DOMLevel, microprice, imbalance, inventory quoting, session filters, force-flat, or later IB protobuf. Open the matching lessons/NN-*/LESSON.md for the spec.
 ---
 
 # 13-lesson curriculum
 
 Source of truth for sequence: [lessons/README.md](../../../lessons/README.md).
 Official language index: [Learn Rust](https://www.rust-lang.org/learn/).
-Official broker index: [TWS API](https://interactivebrokers.github.io/tws-api/introduction.html).
-Rust client: [`ibapi`](https://github.com/wboayue/rust-ibapi) (lesson 12 only).
+Broker reading: [TWS API](https://interactivebrokers.github.io/tws-api/introduction.html).
+Rust client *later*: [`ibapi`](https://github.com/wboayue/rust-ibapi) or prost-generated types.
 
 ## Intent
 
-Take a beginner to a paper-traded MES → ES limit-order book on Interactive Brokers, fast, without replacing the Book.
+Take a beginner to a well-tested **order-book + strategy crate** (MES first, then ES), without replacing the Book, and without a socket.
 
-Application destination: reconstruct Level 2 from TWS `reqMarketDepth` (insert / update / delete), route a limit, convert 10 MES ≡ 1 ES notional. Same types must also describe commodity micros (MCL, MGC).
+Application destination (this lab): `DOMLevel`, L2 `OrderBook` (insert/update/delete), microprice, imbalance, inventory-aware quoting, session filters (pre-market + lunch), velocity / too-fast, force-flat, paper risk gates.
+
+After this lab: wire that crate to IB TWS / Gateway via protobuf. Not here.
 
 ## Bias
 
 - Official tutorial over a homemade language syllabus.
 - Student types the code. Agents quiz and review.
-- Domain types appear early (tick, side, book, order) so lesson 12 is not a shock.
-- No TWS, no `ibapi` crate, no order submit until lesson 12.
-- Paper ports only (TWS 7497, Gateway 4002). Live ports are a failed lab.
+- Domain types appear early so a later adapter is not a rewrite.
+- No TWS, no `ibapi` / `prost` dependency, no order submit in any lesson.
+- Live ports (7496 / 4001) are a failed lab even as constants.
 
 ## The arc
 
-| Lessons | Theme | Wire |
+| Lessons | Theme | Trading concept |
 | --- | --- | --- |
-| 00 | rustfmt, clippy, test, backtrace, debugger | the PR toolchain |
-| 01–04 | rustup through enums | TWS docs walk; ticks; book ownership; order state |
-| 05–08 | crates, iterators, `Result`, traits | API a desk would actually review |
-| 09–11 | tests, CLI, threads | replay a recorded book without TWS |
-| 12 | paper `ibapi` | one MES paper limit; ES is size math, not a second live shot |
+| 00 | rustfmt, clippy, test, backtrace | the PR toolchain |
+| 01–04 | rustup through enums | ticks; `OrderBook`/`DOMLevel`; `Inventory` |
+| 05–08 | crates, iterators, `Result`, traits | L2 + microprice + quoter |
+| 09–11 | tests, CLI, threads | replay + velocity |
+| 12 | session, force-flat, protobuf *sketch* | paper-ready, still offline |
 
 ## Agent rules
 
@@ -45,15 +47,8 @@ When `@start-lesson N` runs:
 5. After they have a diff, `@review-rust`.
 
 Do not implement `src/`.
-Do not invent a thirteenth parallel syllabus.
-Do not write an `ibapi` client, a book, or an order.
-
-## Ports
-
-| Account | TWS | Gateway |
-| --- | --- | --- |
-| Paper (allowed in 12) | 7497 | 4002 |
-| Live (forbidden) | 7496 | 4001 |
+Do not write `OrderBook`, `Quoter`, or an `ibapi` client.
+Do not connect.
 
 ## Rubric (every lesson)
 
@@ -63,4 +58,4 @@ Advance only if the student, not the model, can:
 2. Explain the last rustc error they hit.
 3. Show green `cargo test` and clippy `-D warnings`.
 4. Re-type the core function from a blank file.
-5. Show no live port and no order submit before lesson 12 paper.
+5. Show no socket, no `ibapi` dep, no order submit.

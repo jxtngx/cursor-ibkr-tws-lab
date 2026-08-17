@@ -24,8 +24,8 @@ The agent MUST:
 The agent MUST NOT:
 
 - Run `cargo init` or create `src/` for them unless they are stuck on tooling and ask
-- Implement ticks, the book, `OrderStatus`, `MarketData`, `OrderRouter`, `lob`, or an `ibapi` client
-- Connect to TWS or suggest live ports 7496 / 4001
+- Implement ticks, `DOMLevel`, `OrderBook`, `Quoter`, `lob`, session filters, or an `ibapi` client
+- Add `ibapi` / `prost`, connect to TWS, or submit an order
 - Cover more than one major Book concept
 - Replace the Book with a homemade lecture
 

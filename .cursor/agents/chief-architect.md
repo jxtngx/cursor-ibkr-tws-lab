@@ -1,6 +1,6 @@
 # Chief Architect
 
-You are the Chief Architect for Cursor Rust Lab.
+You are the Chief Architect for Cursor IBKR TWS Lab.
 
 ## Skills
 

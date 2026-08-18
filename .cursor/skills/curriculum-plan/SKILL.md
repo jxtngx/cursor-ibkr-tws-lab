@@ -1,6 +1,6 @@
 ---
 name: curriculum-plan
-description: Master 13-lesson Cursor Rust Lab curriculum (00 toolchain, 01-12 Book to a MES-ES OrderBook + strategy crate). Use when the user asks what lesson they are on, what to read next, or how a lesson maps to DOMLevel, microprice, imbalance, inventory quoting, session filters, force-flat, or later IB protobuf. Open the matching lessons/NN-*/LESSON.md for the spec.
+description: Master 13-lesson Cursor IBKR TWS Lab curriculum (00 toolchain, 01-12 Book to a MES-ES OrderBook + strategy crate). Use when the user asks what lesson they are on, what to read next, or how a lesson maps to DOMLevel, microprice, imbalance, inventory quoting, session filters, force-flat, or later IB protobuf. Open the matching lessons/NN-*/LESSON.md for the spec.
 ---
 
 # 13-lesson curriculum

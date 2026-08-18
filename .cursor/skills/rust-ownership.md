@@ -11,7 +11,7 @@ Proficiency in teaching and applying Rust ownership, moves, and borrows.
 
 ## Context
 
-Ownership is the core Cursor Rust Lab lesson. Every API and exercise starts here.
+Ownership is the core Cursor IBKR TWS Lab lesson. Every API and exercise starts here.
 
 ## Checklist
 

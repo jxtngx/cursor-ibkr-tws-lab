@@ -1,6 +1,6 @@
 # Start Lesson
 
-Open the next Cursor Rust Lab lesson. Teach one official concept. Do not write the student's crate.
+Open the next Cursor IBKR TWS Lab lesson. Teach one official concept. Do not write the student's crate.
 
 ## Usage
 

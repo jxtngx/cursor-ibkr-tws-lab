@@ -1,4 +1,4 @@
-# Cursor Rust Lab
+# Cursor IBKR TWS Lab
 
 Learn Rust with SuperGrok and Cursor.
 This repo is a lab, not a product factory.

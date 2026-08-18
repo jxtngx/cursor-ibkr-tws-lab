@@ -11,7 +11,7 @@ Proficiency in reviewing Rust for idioms and architecture.
 
 ## Context
 
-Reviews keep Cursor Rust Lab lessons honest and crates teachable.
+Reviews keep Cursor IBKR TWS Lab lessons honest and crates teachable.
 
 ## Review Checklist
 

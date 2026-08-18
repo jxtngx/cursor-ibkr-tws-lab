@@ -1,6 +1,6 @@
 # Agent Tools Reference
 
-How Cursor Rust Lab Cursor agents work together.
+How Cursor IBKR TWS Lab Cursor agents work together.
 
 ```mermaid
 graph TD

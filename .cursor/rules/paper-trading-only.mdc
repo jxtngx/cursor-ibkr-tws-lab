@@ -1,20 +1,15 @@
 ---
-description: No IB connection in this lab. No live ports. No order submit. No secrets.
+description: Paper only. ib_interface is the client. No live ports. No live orders.
 globs:
   - "**/*"
 alwaysApply: true
 ---
 
-# Offline until you wire it later
+# Paper trading only
 
-This lab builds an order-book + strategy crate.
-It does **not** talk to Interactive Brokers.
-
-- Forbidden in every lesson: `ibapi` / `prost` in `Cargo.toml`, `Client::connect`, `submit`, `place_order`, any socket to TWS / Gateway.
-- Forbidden as constants or defaults: TWS live **7496**, Gateway live **4001**.
-- Paper ports (7497 / 4002) may appear only in `parse_port` tests and `NOTES.md` so the student can refuse them later.
-- Forbidden always: account numbers, usernames, passwords, API keys in source or `NOTES.md`.
-- Agents must not write, suggest, or "just test" a connect or an order.
-- A later personal project may wire this crate to paper TWS. That is outside the syllabus.
-
-If the student asks to go live or to add `ibapi` now, point at lesson 12's protobuf *sketch* and stop.
+- Client: `ib_interface` from jxtngx/ib-interface. Official `ibapi` is its protobuf backend, not a second stack you write.
+- Forbidden as defaults: TWS live **7496**, Gateway live **4001**.
+- Lessons 00–11: no `IB.connect`. Fixtures and mocks.
+- Lesson 12: paper connect (7497 / 4002) is optional stretch; tests skip without TWS.
+- No account numbers, passwords, or live `placeOrder`.
+- After the lab, point at cursor-tws-plugin and `/kyc-flow`. Do not run a retail-assumption trading desk in this repo.

@@ -1,0 +1,10 @@
+---
+description: Student-owned packages under lessons/. No dumping ib-interface.
+globs: "**/*"
+alwaysApply: true
+---
+
+# Packages
+
+The student creates `pyproject.toml` / src layout in the lesson folder.
+Do not vendor or rewrite ib-interface. Depend on it when the lesson names it.

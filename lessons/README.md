@@ -1,50 +1,37 @@
 # Lessons
 
 Lesson 00 is the toolchain.
-Lessons 01–12 go from [Learn Rust](https://www.rust-lang.org/learn/) to a paper-ready MES → ES order-book + strategy crate.
+Lessons 01–12 go from Python + [ib-interface](https://github.com/jxtngx/ib-interface) reading to a paper-ready MES → ES book + risk gates.
 
-The wire to Interactive Brokers (protobuf / [`ibapi`](https://github.com/wboayue/rust-ibapi) / TWS / Gateway) is **later**.
-No lesson connects or submits.
+The **wire** is `ib_interface` (official `ibapi` protobuf under it).
+Lessons 00–11 do not connect. Lesson 12 may paper-connect as stretch.
+Live ports are forbidden.
 
-You write every crate.
-Agents open `LESSON.md`, quiz you, and review.
-They do not implement the exercise.
-They do not place orders.
+After lesson 12: a **separate** trading repo + [cursor-tws-plugin](https://github.com/jxtngx/cursor-tws-plugin) (`/kyc-flow`).
 
-| # | Folder | Official spine | You build | Toward |
-| --- | --- | --- | --- | --- |
-| 00 | [00-dev-standards](00-dev-standards/LESSON.md) | Appendix D, Clippy, rustfmt, Error Index | fmt / clippy / test / backtrace | the PR toolchain |
-| 01 | [01-getting-started](01-getting-started/LESSON.md) | Book 1–2, rustup | Cargo hello, walk TWS + `ibapi` docs | paper ports, no connect |
-| 02 | [02-language-foundations](02-language-foundations/LESSON.md) | Book 3, RBE primitives | ticks, multipliers, MES first | contract math |
-| 03 | [03-ownership](03-ownership/LESSON.md) | Book 4, rustlings moves | `OrderBook` owns `DOMLevel` | depth callbacks |
-| 04 | [04-structs-enums](04-structs-enums/LESSON.md) | Book 5–6 | `Side`, `Tif`, `OrderStatus`, `Inventory` | MES then ES |
-| 05 | [05-crates-modules](05-crates-modules/LESSON.md) | Book 7, Cargo Book | `tick` / `book` / `order` / `risk` | later adapter, not inside `book` |
-| 06 | [06-collections-iterators](06-collections-iterators/LESSON.md) | Book 8, 13 | L2 insert / update / delete, microprice, imbalance | `reqMarketDepth` |
-| 07 | [07-error-handling](07-error-handling/LESSON.md) | Book 9 | paper gates, reject, bad window | risk before a socket exists |
-| 08 | [08-traits-lifetimes](08-traits-lifetimes/LESSON.md) | Book 10 | `MarketData`, `OrderRouter`, `Quoter` | inventory-aware MM |
-| 09 | [09-tests-docs](09-tests-docs/LESSON.md) | Book 11, rustdoc | replay fixtures, rustdoc | CI without TWS |
-| 10 | [10-cli-io](10-cli-io/LESSON.md) | Book 12, CLI book | `lob` on JSONL | operator binary |
-| 11 | [11-concurrency](11-concurrency/LESSON.md) | Book 15–16 | feed / book / quoter; velocity | async later |
-| 12 | [12-paper-readiness](12-paper-readiness/LESSON.md) | Book 20 as needed | session + lunch, force-flat, protobuf sketch | ready to wire |
+You write every package. Agents quiz and review. They do not implement. They do not place live orders.
 
-## How to start a lesson
+| # | Folder | Spine | You build |
+| --- | --- | --- | --- |
+| 00 | [00-dev-standards](00-dev-standards/LESSON.md) | ruff, pytest, uv | toolchain |
+| 01 | [01-getting-started](01-getting-started/LESSON.md) | ib-interface, TWS API | install, paper ports |
+| 02 | [02-language-foundations](02-language-foundations/LESSON.md) | Python types | ticks, MES first |
+| 03 | [03-async-events](03-async-events/LESSON.md) | asyncio | event callbacks |
+| 04 | [04-structs-enums](04-structs-enums/LESSON.md) | TWS contracts | Side, Tif, Inventory |
+| 05 | [05-packages](05-packages/LESSON.md) | packages | tick / book / order / risk |
+| 06 | [06-collections-iterators](06-collections-iterators/LESSON.md) | market depth | L2, microprice |
+| 07 | [07-error-handling](07-error-handling/LESSON.md) | IB errors | paper gates |
+| 08 | [08-protocols](08-protocols/LESSON.md) | Protocol | MarketData, OrderRouter |
+| 09 | [09-tests-docs](09-tests-docs/LESSON.md) | pytest | fixtures, no TWS |
+| 10 | [10-cli-io](10-cli-io/LESSON.md) | argparse | replay CLI |
+| 11 | [11-concurrency](11-concurrency/LESSON.md) | asyncio | feed / book / quoter |
+| 12 | [12-paper-readiness](12-paper-readiness/LESSON.md) | session, flatten | optional paper hello |
 
-1. Read the official links in that `LESSON.md` *before* you prompt.
-2. `@start-lesson 00` (then 01, or the next unfinished number).
-3. Create the crate yourself:
+## How to start
 
 ```bash
 cd lessons/00-dev-standards
-cargo init --lib --name lesson00
+# you create pyproject / tests
 ```
 
-4. Write the tests first when the lesson says so.
-5. `@review-rust` only after `cargo test` is green.
-
-## What must not happen
-
-- An agent filling `src/` because you asked it to "just make it compile."
-- A complete `OrderBook`, quoter, or `ibapi` client dumped into this repo as a solution.
-- Skipping lesson 00 because the tools look obvious.
-- Skipping the Book chapter because the domain hook looks more fun.
-- Adding `ibapi` / `prost`, connecting to TWS, or submitting an order.
+`@start-lesson 00` then `@review-python` after pytest is green.

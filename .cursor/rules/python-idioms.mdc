@@ -1,0 +1,11 @@
+---
+description: Python idioms for this lab.
+globs: "**/*.py"
+alwaysApply: true
+---
+
+# Python
+
+- 3.12+, type hints on public functions, pytest, ruff.
+- `asyncio` for anything that will later wrap `ib_interface`.
+- No `except: pass`. No live ports as constants.

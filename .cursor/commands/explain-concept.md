@@ -1,26 +1,9 @@
 # Explain Concept
 
-Explain one Rust concept in SuperGrok-tutor style.
-
-## Usage
-
 ```
-@explain-concept <concept>
+@explain-concept <idea>
 ```
 
-Examples: `ownership`, `lifetimes`, `Result`, `dyn Trait`, `Pin`.
+Examples: `ib_interface.IB`, paper port, `Contract`, L2 insert/update/delete, asyncio event, force-flat.
 
-## Format
-
-1. **What it is** - one paragraph
-2. **Why Rust does this** - one paragraph
-3. **Minimal example** - compiles with `cargo check`
-4. **Common error** - real compiler message, then the fix
-5. **Try this** - one exercise prompt, no full solution unless asked
-
-## Constraints
-
-- Stay on one concept
-- No emoji
-- No production refactors
-- Cite `std` docs or The Book by name, not by dumping chapters
+Official URL. Ten to twenty lines. One failure. Ask a question. Stop. Do not write their app.

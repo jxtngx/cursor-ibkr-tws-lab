@@ -1,3 +1,8 @@
+---
+name: story-estimation
+description: "Story Estimation. Estimate task complexity using Planning Poker and story points. Use when this role or topic is in scope."
+---
+
 # Story Estimation
 
 Estimate task complexity using Planning Poker and story points.

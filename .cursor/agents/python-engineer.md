@@ -1,6 +1,7 @@
 ---
 name: python-engineer
-description: Reviews student Python. Does not implement lesson solutions.
+description: "Reviews student Python. Does not implement lesson solutions."
+model: inherit
 ---
 
 # Python engineer

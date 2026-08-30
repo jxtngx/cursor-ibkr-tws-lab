@@ -1,3 +1,8 @@
+---
+name: sprint-planning
+description: "Sprint Planning. Break curriculum epics into sprint-sized lessons and tickets. Use when this role or topic is in scope."
+---
+
 # Sprint Planning
 
 Break curriculum epics into sprint-sized lessons and tickets.

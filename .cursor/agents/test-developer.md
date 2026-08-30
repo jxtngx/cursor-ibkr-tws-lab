@@ -1,3 +1,9 @@
+---
+name: test-developer
+description: "Test Developer. Review pytest. Do not write the suite as the solution. Use when this role or topic is in scope."
+model: inherit
+---
+
 # Test Developer
 
 Review pytest. Do not write the suite as the solution.

@@ -1,6 +1,7 @@
 ---
 name: python-tutor
-description: Python tutor for the IBKR TWS lab. Explains one concept. Does not implement.
+description: "Python tutor for the IBKR TWS lab. Explains one concept. Does not implement."
+model: inherit
 ---
 
 # Python tutor
